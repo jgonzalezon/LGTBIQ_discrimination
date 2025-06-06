@@ -4,11 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LGTBIQ_discrimination</title>
-    <!-- Importamos el CSS -->
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
-    <!-- Contenedor intro ocupa toda la pantalla y tendrá la bandera de fondo -->
     <div id="intro">
       <img
         id="intro-image"
@@ -18,236 +16,15 @@
       <button id="start-button">¿Cómo cambiaría mi vida si fuera...?</button>
     </div>
 
-    <!-- Contenedor con el formulario, inicialmente oculto -->
     <div id="form-container" class="hidden">
       <form id="data-form">
-        <!-- IDENTIDAD BÁSICA -->
-        <fieldset>
-          <legend>Identidad básica (SO‐GIE‐SC)</legend>
-
-          <!-- Sexualidad -->
-          <label for="sexuality">Sexualidad:</label>
-          <select id="sexuality" name="sexuality" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="lesbiana">Lesbiana</option>
-            <option value="gay">Gay</option>
-            <option value="bisexual">Bisexual</option>
-            <option value="pansexual">Pansexual</option>
-            <option value="asexual">Asexual</option>
-            <option value="heterosexual">Heterosexual</option>
-            <option value="otra">Otra</option>
-          </select>
-
-          <!-- Identidad de género -->
-          <label for="gender_identity">Identidad de género:</label>
-          <select id="gender_identity" name="gender_identity" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="cis_mujer">Cis mujer</option>
-            <option value="cis_hombre">Cis hombre</option>
-            <option value="trans_mujer">Trans mujer</option>
-            <option value="trans_hombre">Trans hombre</option>
-            <option value="no_binaria">No binaria/diversa</option>
-          </select>
-
-          <!-- Características sexuales -->
-          <label for="sex_characteristics">Características sexuales:</label>
-          <select id="sex_characteristics" name="sex_characteristics" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="intersex">Intersex</option>
-            <option value="endosex">Endosex</option>
-          </select>
+        <fieldset id="dynamic-fields">
+          <legend>Cuestionario</legend>
         </fieldset>
-
-        <!-- EDAD -->
-        <fieldset>
-          <legend>Edad</legend>
-          <label for="age_range">Selecciona franja etaria:</label>
-          <select id="age_range" name="age_range" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="15_17">15-17</option>
-            <option value="18_24">18-24</option>
-            <option value="25_34">25-34</option>
-            <option value="35_54">35-54</option>
-            <option value="55_plus">55+</option>
-          </select>
-        </fieldset>
-
-        <!-- PAÍS DE RESIDENCIA -->
-        <fieldset>
-          <legend>País de residencia</legend>
-          <label for="country">Selecciona tu país:</label>
-          <select id="country" name="country" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <!-- EU-27 -->
-            <option value="Alemania">Alemania</option>
-            <option value="Austria">Austria</option>
-            <option value="Bélgica">Bélgica</option>
-            <option value="Bulgaria">Bulgaria</option>
-            <option value="Chipre">Chipre</option>
-            <option value="Croacia">Croacia</option>
-            <option value="Dinamarca">Dinamarca</option>
-            <option value="Eslovaquia">Eslovaquia</option>
-            <option value="Eslovenia">Eslovenia</option>
-            <option value="España">España</option>
-            <option value="Estonia">Estonia</option>
-            <option value="Finlandia">Finlandia</option>
-            <option value="Francia">Francia</option>
-            <option value="Grecia">Grecia</option>
-            <option value="Hungría">Hungría</option>
-            <option value="Irlanda">Irlanda</option>
-            <option value="Italia">Italia</option>
-            <option value="Letonia">Letonia</option>
-            <option value="Lituania">Lituania</option>
-            <option value="Luxemburgo">Luxemburgo</option>
-            <option value="Malta">Malta</option>
-            <option value="Países Bajos">Países Bajos</option>
-            <option value="Polonia">Polonia</option>
-            <option value="Portugal">Portugal</option>
-            <option value="República Checa">República Checa</option>
-            <option value="Rumanía">Rumanía</option>
-            <option value="Suecia">Suecia</option>
-            <!-- AL, MK, RS -->
-            <option value="Albania">Albania</option>
-            <option value="Macedonia del Norte">Macedonia del Norte</option>
-            <option value="Serbia">Serbia</option>
-          </select>
-        </fieldset>
-
-        <!-- DISCAPACIDAD / LIMITACIONES -->
-        <fieldset>
-          <legend>Discapacidad / limitaciones en la actividad</legend>
-          <label for="disability">¿Tienes alguna limitación de actividad o discapacidad?</label>
-          <select id="disability" name="disability" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="ninguna">Ninguna</option>
-            <option value="limitaciones_leves">Limitaciones leves</option>
-            <option value="limitaciones_severas">Limitaciones severas</option>
-          </select>
-        </fieldset>
-
-        <!-- SITUACIÓN ECONÓMICA -->
-        <fieldset>
-          <legend>Situación económica</legend>
-          <label for="economic_situation">
-            Dificultad para “llegar a fin de mes”:
-          </label>
-          <select id="economic_situation" name="economic_situation" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="muy_facil">Muy fácilmente</option>
-            <option value="algunas_dificultades">Con algunas dificultades</option>
-            <option value="grandes_dificultades">Con grandes dificultades</option>
-          </select>
-        </fieldset>
-
-        <!-- PERTENENCIA A MINORÍAS -->
-        <fieldset>
-          <legend>Pertenencia a minorías</legend>
-          <label>Marca las que correspondan:</label>
-          <div class="checkbox-group">
-            <input type="checkbox" id="minority_race" name="minorities" value="color_piel" />
-            <label for="minority_race">Color de piel diferente</label><br />
-
-            <input type="checkbox" id="minority_ethnicity" name="minorities" value="etnia_migrante" />
-            <label for="minority_ethnicity">Etnia / Migrante</label><br />
-
-            <input type="checkbox" id="minority_religion" name="minorities" value="religion" />
-            <label for="minority_religion">Religión</label><br />
-
-            <input type="checkbox" id="minority_refugee" name="minorities" value="refugiado" />
-            <label for="minority_refugee">Condición de refugiado</label><br />
-          </div>
-        </fieldset>
-
-        <!-- NIVEL EDUCATIVO -->
-        <fieldset>
-          <legend>Nivel educativo</legend>
-          <label for="education_level">Selecciona nivel:</label>
-          <select id="education_level" name="education_level" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="ISCED_1_3">ISCED 1–3 (educación básica)</option>
-            <option value="ISCED_5_8">Estudios superiores (ISCED 5–8)</option>
-          </select>
-        </fieldset>
-
-        <!-- SITUACIÓN LABORAL -->
-        <fieldset>
-          <legend>Situación laboral</legend>
-          <label for="employment_status">Selecciona tu estado:</label>
-          <select id="employment_status" name="employment_status" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="empleado">Empleado/a</option>
-            <option value="desempleado">Desempleado/a</option>
-            <option value="estudiante">Estudiante</option>
-            <option value="jubilado">Jubilado/a</option>
-            <option value="otro">Otro</option>
-          </select>
-        </fieldset>
-
-        <!-- OPENNESS / ARMARIO -->
-        <fieldset>
-          <legend>Openness / “estar fuera del armario”</legend>
-          <label for="out_status">¿Estás fuera del armario?</label>
-          <select id="out_status" name="out_status" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="no_estoy_fuera">No estoy fuera</option>
-            <option value="parcialmente_fuera">Parcialmente fuera</option>
-            <option value="totalmente_fuera">Totalmente fuera</option>
-          </select>
-        </fieldset>
-
-        <!-- TIPO DE ZONA -->
-        <fieldset>
-          <legend>Tipo de zona</legend>
-          <label for="zone_type">¿Vives en zona:</label>
-          <select id="zone_type" name="zone_type" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="urbana">Urbana</option>
-            <option value="rural">Rural</option>
-          </select>
-        </fieldset>
-
-        <!-- FRECUENCIA DE USO DE REDES SOCIALES -->
-        <fieldset>
-          <legend>Frecuencia de uso de redes sociales</legend>
-          <label for="social_freq">¿Con qué frecuencia usas redes?</label>
-          <select id="social_freq" name="social_freq" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="diario">Diario</option>
-            <option value="semanal">Semanal</option>
-            <option value="mensual">Mensual</option>
-            <option value="rara_vez">Rara vez</option>
-            <option value="nunca">Nunca</option>
-          </select>
-        </fieldset>
-
-        <!-- PARTICIPACIÓN EN EVENTOS LGBTIQ -->
-        <fieldset>
-          <legend>Participación en eventos LGBTIQ+</legend>
-          <label for="lgbtiq_events">¿Participas en eventos?</label>
-          <select id="lgbtiq_events" name="lgbtiq_events" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="sí_con_frecuencia">Sí, con frecuencia</option>
-            <option value="sí_casualmente">Sí, de forma ocasional</option>
-            <option value="no">No</option>
-          </select>
-        </fieldset>
-
-        <!-- DIFICULTADES DE VIVIENDA / FAMILIA -->
-        <fieldset>
-          <legend>Dificultades de vivienda / familia</legend>
-          <label for="housing_issues">¿Tienes dificultades?</label>
-          <select id="housing_issues" name="housing_issues" required>
-            <option value="" disabled selected>Selecciona...</option>
-            <option value="sí">Sí</option>
-            <option value="no">No</option>
-          </select>
-        </fieldset>
-
         <button type="submit">Enviar datos</button>
       </form>
     </div>
 
-    <!-- Código JavaScript principal -->
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>
