@@ -18,16 +18,25 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+  background-color: #000; /* color de fondo en caso de que la imagen no cargue */
+}
 
-  /* Fondo: imagen de la bandera */
-  background-image: url('./src/assets/rainbow.svg');
-  background-size: cover;         /* que cubra todo el contenedor */
-  background-position: center;    /* centrada */
-  background-repeat: no-repeat;
+#intro-image {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  max-height: 100vh;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
 }
 
 /* ===== Botón grande centrado sobre la bandera ===== */
 #start-button {
+  position: relative;
+  z-index: 1;
   background-color: rgba(0, 123, 255, 0.9); /* tono azul semitransparente */
   color: #fff;
   border: none;
