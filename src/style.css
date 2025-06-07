@@ -79,13 +79,16 @@ html, body {
 
 /* Estilo contenedor del formulario (aparece bajo #intro) */
 #form-container {
+  position: absolute;           /* ► centrado real, sin scroll */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   max-width: 800px;
-  margin: 20px auto 40px auto;
-  background-color: #111; /* fondo oscuro sólido */
-  border: 1px solid #333;
-  border-radius: 5px;
-  padding: 20px;
-  box-sizing: border-box;
+  background:#111;
+  border:1px solid #333;
+  border-radius:5px;
+  padding:20px;
+  box-sizing:border-box;
 }
 
 /* ===== ESTILOS INTERNO DEL FORMULARIO ===== */
@@ -146,4 +149,40 @@ input[type="email"] {
 
 #data-form button[type="submit"]:hover {
   background-color: #0056b3;
+}
+
+
+/* ==== DASHBOARD ==== */
+#viz-container .map   { width: 100%; max-width: 900px; height: 420px; margin: 60px auto 40px; }
+#viz-container .charts{ display:flex;gap:2rem;justify-content:center;flex-wrap:wrap; }
+#viz-container .charts>div{ background:#b5ffff;padding:1rem; }
+
+/* Tabs */
+#tabs{display:flex;gap:4px;margin-left:8px;}
+#tabs button{border:none;padding:2px 6px;font-size:14px;cursor:pointer}
+#tabs button.active{background:#ffe46b;color:#000}
+#tabs button:not(.active){background:#00cfe8;color:#000}
+
+/* --- CENTRAR DASHBOARD --- */
+#dashboard{
+  position:absolute;
+  inset:0;                /* ocupa toda la pantalla */
+  overflow:auto;          /* scroll si el contenido crece */
+}
+
+/* Leyenda del mapa */
+#map-legend{
+  width:260px;
+  height:14px;
+  margin:10px auto 0;
+  display:block;
+  border:1px solid #333;
+}
+#legend-labels{
+  width:260px;
+  margin:4px auto 30px;
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  color:#fff;
 }
