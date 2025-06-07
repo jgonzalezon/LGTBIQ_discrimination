@@ -22,14 +22,14 @@ export async function drawChoropleth(el, geojson, metrics) {
      .join('path')
        .attr('d', path)
        .attr('fill', d => {
-         const cc = d.properties.ISO_A3;          // código país iso3
+        const cc = d.properties.ISO3;            // código país iso3
          const v  = metrics[cc];                  // 0-1
          return v == null ? '#ccc' : color(v);
        })
        .attr('stroke', '#000')
        .on('click', (e,d) => {
           // al pinchar país → recalcular gráficos
-          const cc = d.properties.ISO_A3;
+         const cc = d.properties.ISO3;
           window.renderChartsForCountry(cc);      // función global
        });
 }

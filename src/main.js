@@ -17,6 +17,7 @@ const CSV_VARIABLES = ['A9','A12','G1','G2','G19','RESPONDENT_SO','RESPONDENT_GI
 const LS_KEY = 'surveyAnswers';
 
 let GEO=null, DATA=null;           // se llenan en init()
+let NAME_TO_ISO3=null;             // mapeo nombre → código ISO3
 
 ///// 2.  PERSISTENCIA
 const saveAns = o   => localStorage.setItem(LS_KEY,JSON.stringify(o));
@@ -49,7 +50,12 @@ function preloadForm(o){
 }
 
 ///// 4.  FILTRADO y MÉTRICAS
-const isOne = v => v==='Selected' || v==='Yes';
+const isOne = v => {
+  if(v==null || v==='') return false;
+  if(v==='Selected' || v==='Yes') return true;
+  const neg=['Never','At no time','Not applicable','Prefer not to say','Don\u2019t know'];
+  return !neg.includes(v);
+};
 
 function filteredRows(f){
   return DATA.filter(r=>{
@@ -75,15 +81,17 @@ function choroplethByCountry(tab,f){
   const VARS={
     mental:['C1_E','C1_F','D1_2_a','D1_2_b','D1_2_c','D1_2_d','D1_2_e'],
     apertura:['B5_A','B5_B','B5_C','B5_D'],
-    violencia:['E1','F1']
+    violencia:['E1','F1_A','F1_B','F1_C']
   }[tab]||[];
   const map={};
   filteredRows(f).forEach(r=>{
+    const cc=NAME_TO_ISO3[r.A9];            // convertir nombre → ISO3
+    if(!cc) return;                         // ignorar si no hay código
     const ok=VARS.every(v=>isOne(r[v]))?1:0;
-    (map[r.A9]??=[]).push(ok);              // A9 = país residencia (nombre textual)
+    (map[cc]??=[]).push(ok);
   });
   Object.keys(map).forEach(k=>map[k]=d3.mean(map[k]));
-  return map;                               // { "Spain":0.42, ... }
+  return map;                               // { "ESP":0.42, ... }
 }
 
 ///// 5.  D3 – DRAW
@@ -112,13 +120,13 @@ function drawMap(target, geo, metrics){
      .join('path')
        .attr('d', path)
        .attr('fill',d=>{
-          const v = metrics[d.properties.NAME];
+          const v = metrics[d.properties.ISO3];
           return v==null ? '#555' : color(v);
        })
        .attr('stroke','#000')
        .append('title')
        .text(d=>{
-         const v = metrics[d.properties.NAME];
+         const v = metrics[d.properties.ISO3];
          return `${d.properties.NAME}: ${v!=null ? d3.format('.0%')(v) : 'sin datos'}`;
        });
 
@@ -192,7 +200,8 @@ function renderTab(tab,f){
     drawDonut(charts.appendChild(document.createElement('div')), pct('H2',f));
 
   if(tab==='violencia')
-    ['E1','E3','F1'].forEach(v=>drawDonut(charts.appendChild(document.createElement('div')),pct(v,f)));
+    ['E1','E3','F1_A','F1_B','F1_C'].forEach(v=>
+      drawDonut(charts.appendChild(document.createElement('div')), pct(v,f)));
 
   if(tab==='discriminacion')
     drawBars(charts.appendChild(document.createElement('div')),
@@ -232,6 +241,9 @@ function showDashboard(filters){
     d3.json('/data/europe.geojson'),
     d3.csv('/data/selected_variables.csv',d3.autoType)
   ]);
+  NAME_TO_ISO3 = Object.fromEntries(
+    GEO.features.map(f => [f.properties.NAME, f.properties.ISO3])
+  );
   buildAgeRanges();
   fillSelects();
   const stored=loadAns(); if(stored) preloadForm(stored);
