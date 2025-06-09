@@ -12,7 +12,7 @@ const dash      = document.getElementById('dashboard');
 
 const CSV_VARIABLES = [               // ❶  A12 se elimina de la lista
   'A9',              // País de residencia
-  'G1', 'G19',        // Educación y situación económica
+  'G1',              // Nivel educativo
   'RESPONDENT_SO',   // Orientación sexual
   'RESPONDENT_GIE'   // Identidad de género
 ];
