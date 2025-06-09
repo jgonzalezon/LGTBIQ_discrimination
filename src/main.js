@@ -12,7 +12,7 @@ const dash      = document.getElementById('dashboard');
 
 const CSV_VARIABLES = [               // ❶  A12 se elimina de la lista
   'A9',              // País de residencia
-  'G1', 'G2', 'G19', // Educación, empleo, llegar a fin de mes
+  'G1', 'G19',        // Educación y situación económica
   'RESPONDENT_SO',   // Orientación sexual
   'RESPONDENT_GIE'   // Identidad de género
 ];
@@ -96,20 +96,26 @@ function pct (variable, f) {
   return rows.length ? ones / rows.length : 0;
 }
 
-function choroplethByCountry (tab, f) {
+function choroplethByCountry (tabOrVar, f) {
   const VARS = {
-    mental:    ['C1_E','C1_F','D1_2_a','D1_2_b','D1_2_c','D1_2_d','D1_2_e'],
     apertura:  ['B5_A','B5_B','B5_C','B5_D'],
     violencia: ['E1','F1_A','F1_B','F1_C']
-  }[tab] || [];
+  }[tabOrVar];
 
   const map = {};                // { ISO3:[scores] }
 
-  filteredRows(f).forEach(r => {
+  const rows = tabOrVar === 'H1' ? DATA : filteredRows(f);
+
+  rows.forEach(r => {
     const cc = NAME_TO_ISO3[r.A9];
     if (!cc) return;
-    const score = d3.mean(VARS, v => +isOne(r[v]));
-    (map[cc] ??= []).push(score);
+
+    if (tabOrVar === 'H1') {
+      if (r.H1 != null && r.H1 !== '') (map[cc] ??= []).push(+r.H1);
+    } else {
+      const score = d3.mean(VARS, v => +isOne(r[v]));
+      (map[cc] ??= []).push(score);
+    }
   });
 
   Object.keys(map).forEach(k => (map[k] = d3.mean(map[k])));
@@ -127,7 +133,12 @@ function drawMap (target, geo, metrics) {
 
   const proj  = d3.geoMercator().fitSize([w, h - 40], geo);
   const path  = d3.geoPath().projection(proj);
-  const color = d3.scaleSequential(d3.interpolateRdYlGn).domain([0, 1]);
+
+  const vals = Object.values(metrics).filter(v => v != null);
+  const min = d3.min(vals), max = d3.max(vals);
+  const color = d3.scaleLinear()
+                 .domain([min, max])
+                 .range(['red', 'green']);
 
   svg.append('g')
      .selectAll('path')
@@ -136,6 +147,7 @@ function drawMap (target, geo, metrics) {
        .attr('d', path)
        .attr('fill', d => {
          const v = metrics[d.properties.ISO3];
+         if (d.properties.ISO3 === SELECTED_COUNTRY) return '#00cfe8';
          return v == null ? '#555' : color(v);
        })
        .attr('stroke', d => SELECTED_COUNTRY === d.properties.ISO3 ? '#fff' : '#000')
@@ -149,7 +161,7 @@ function drawMap (target, geo, metrics) {
        .append('title')
          .text(d => {
            const v = metrics[d.properties.ISO3];
-           return `${d.properties.NAME}: ${v != null ? d3.format('.0%')(v) : 'sin datos'}`;
+           return `${d.properties.NAME}: ${v != null ? d3.format('.1f')(v) : 'sin datos'}`;
          });
 
   // leyenda (igual que antes) …
@@ -157,8 +169,8 @@ function drawMap (target, geo, metrics) {
   const grad = defs.append('linearGradient')
                    .attr('id', 'grad')
                    .attr('x1', '0%').attr('x2', '100%');
-  grad.append('stop').attr('offset', '0%').attr('stop-color', color(0));
-  grad.append('stop').attr('offset', '100%').attr('stop-color', color(1));
+  grad.append('stop').attr('offset', '0%').attr('stop-color', color(min));
+  grad.append('stop').attr('offset', '100%').attr('stop-color', color(max));
 
   svg.append('rect')
      .attr('id', 'map-legend')
@@ -171,12 +183,12 @@ function drawMap (target, geo, metrics) {
   svg.append('g')
      .attr('id', 'legend-labels')
      .selectAll('text')
-     .data([0, 1])
+     .data([min, max])
      .join('text')
        .attr('x', (d, i) => (w - 260) / 2 + (i ? 260 : 0))
        .attr('y', h - 6)
        .attr('text-anchor', (d, i) => i ? 'end' : 'start')
-       .text(d => d3.format('.0%')(d));
+       .text(d => d3.format('.0f')(d));
 }
 
 function drawBars (target, data) {
@@ -237,17 +249,19 @@ function renderTab (tab, f) {
   const mapDiv = document.createElement('div');
   mapDiv.className = 'map';
   vc.appendChild(mapDiv);
-  drawMap(mapDiv, GEO, choroplethByCountry(tab, f)); // mapa = métricas globales
+  if (tab === 'mental') {
+    drawMap(mapDiv, GEO, choroplethByCountry('H1', {}));
+  } else {
+    drawMap(mapDiv, GEO, choroplethByCountry(tab, f)); // mapa = métricas globales
+  }
 
   const charts = document.createElement('div');
   charts.className = 'charts';
   vc.appendChild(charts);
 
   if (tab === 'mental') {
-    drawBars(charts.appendChild(document.createElement('div')),
-      ['C1_E','C1_F','D1_2_a','D1_2_b','D1_2_c','D1_2_d','D1_2_e']
-        .map(v => ({ label: v, value: pct(v, chartFilters) }))
-    );
+    drawDonut(charts.appendChild(document.createElement('div')), pct('H2', chartFilters));
+    drawDonut(charts.appendChild(document.createElement('div')), pct('H3', chartFilters));
   }
 
   if (tab === 'apertura') {
