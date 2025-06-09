@@ -142,7 +142,9 @@ input[type="email"]{
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
+  width:fit-content;
   gap:6px;
+  text-align:center;
   font-size:.9rem;
 }
 .donut-legend li{ display:flex; align-items:center; }

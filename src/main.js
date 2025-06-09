@@ -202,11 +202,13 @@ function choroplethByCountry (tabOrVar, f) {
 ///// 5.  D3 – DRAWERS (sin cambios)
 function drawMap (target, geo, metrics) {
   const w = target.clientWidth || 900;
-  const h = 660;
+  const h = target.clientHeight || 660;
 
   const svg = d3.select(target).html('')
                 .append('svg')
-                .attr('viewBox', [0, 0, w, h]);
+                .attr('viewBox', [0, 0, w, h])
+                .attr('width', '100%')
+                .attr('height', '100%');
 
   const proj  = d3.geoMercator().fitSize([w, h - 40], geo);
   const path  = d3.geoPath().projection(proj);
