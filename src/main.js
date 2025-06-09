@@ -325,6 +325,9 @@ function choroplethByCountry (tabOrVar, f) {
     } else if (tabOrVar === 'apertura') {
       const b5 = VARS.some(v => isOne(r[v])) ? 1 : 0;
       (map[cc] ??= []).push(b5);
+    } else if (tabOrVar === 'violencia') {
+      const experienced = VARS.some(v => r[v] && r[v] !== 'Never') ? 1 : 0;
+      (map[cc] ??= []).push(experienced);
     } else {
       const score = d3.mean(VARS, v => +isOne(r[v])) * 100;
       (map[cc] ??= []).push(score);
@@ -333,7 +336,9 @@ function choroplethByCountry (tabOrVar, f) {
 
   Object.keys(map).forEach(k => {
     const mean = d3.mean(map[k]);
-    map[k] = tabOrVar === 'apertura' ? mean * 100 : mean;
+    map[k] = (tabOrVar === 'apertura' || tabOrVar === 'violencia')
+      ? mean * 100
+      : mean;
   });
   return map;
 }
@@ -659,7 +664,11 @@ function renderTab (tab, f) {
     const colors = (tab === 'apertura' || tab === 'violencia') ? ['green','red'] : ['red','green'];
     const filters = (tab === 'apertura' || tab === 'violencia') ? omit(f, 'A9') : f;
     const domain = (tab === 'apertura' || tab === 'violencia') ? [0,100] : null;
-    const suffix = tab === 'apertura' ? ' % de ocultación' : '';
+    const suffix = tab === 'apertura'
+      ? ' % de ocultación'
+      : tab === 'violencia'
+        ? '% que ha recibido violencia'
+        : '';
     drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors, domain, suffix);
     if (tab === 'apertura') {
       mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de cultura/ocultación por países</h3>');
