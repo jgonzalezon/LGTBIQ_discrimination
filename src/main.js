@@ -218,12 +218,14 @@ function drawBars (target, data) {
        .attr('fill', '#00cfe8');
 }
 
-function drawDonut (target, val) {
+function drawDonut (target, val, title) {
   const w = 220, h = 220, r = 80;
-  const svg = d3.select(target).html('')
-                .append('svg').attr('viewBox', [0, 0, w, h])
+  const div = d3.select(target).html('');
+  if (title) div.append('h4').text(title);
+
+  const svg = div.append('svg').attr('viewBox', [0, 0, w, h])
                 .append('g')
-                  .attr('transform', `translate(${w/2},${h/2})`);
+                .attr('transform', `translate(${w/2},${h/2})`);
 
   const arc = d3.arc().innerRadius(r * 0.6).outerRadius(r);
 
@@ -269,8 +271,8 @@ function renderTab (tab, f) {
   vc.appendChild(charts);
 
   if (tab === 'mental') {
-    drawDonut(charts.appendChild(document.createElement('div')), pct('H2', chartFilters));
-    drawDonut(charts.appendChild(document.createElement('div')), pct('H3', chartFilters));
+    drawDonut(charts.appendChild(document.createElement('div')), pct('H2', chartFilters), 'Depresión');
+    drawDonut(charts.appendChild(document.createElement('div')), pct('H3', chartFilters), 'Intentos de suicidio');
   }
 
   if (tab === 'apertura') {

@@ -103,7 +103,11 @@ input[type="email"]{
   display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
 }
 #viz-container .charts>div{
-  background:#b5ffff; padding:1rem;
+  background:#111;
+  padding:1rem;
+  border:1px solid #333;
+  border-radius:4px;
+  text-align:center;
 }
 
 /* leyenda */
