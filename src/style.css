@@ -169,7 +169,8 @@ input[type="email"]{
 /* botón “Volver al cuestionario” */
 #back-btn{
   position:fixed; bottom:24px; right:24px;
-  padding:8px 14px;
+  padding:16px 28px;                 /* 200% */
+  font-size:2rem;                    /* 200% */
   background:#00cfe8; color:#000;
   border:none; border-radius:4px; cursor:pointer;
   box-shadow:0 2px 6px rgba(0,0,0,.4);
