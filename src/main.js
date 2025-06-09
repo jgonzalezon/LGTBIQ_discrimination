@@ -840,8 +840,8 @@ function showDashboard (filters) {
 (async function init () {
   try {
     [GEO, DATA] = await Promise.all([
-      d3.json('/data/europe.geojson'),
-      d3.csv('/data/selected_variables.csv', d3.autoType)
+      d3.json('./data/europe.geojson'),
+      d3.csv('./data/selected_variables.csv', d3.autoType)
     ]);
   } catch (err) {
     console.error(err);
