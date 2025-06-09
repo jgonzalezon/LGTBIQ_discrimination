@@ -86,6 +86,13 @@ const H3_ES = {
   'Prefer not to say': 'Prefiero no responder',
   'Don\u2019t know': 'No lo s\u00e9'
 };
+const B5_ES = {
+  "B5_A": "Casa",
+  "B5_B": "Familia",
+  "B5_C": "Escuela",
+  "B5_D": "Trabajo"
+};
+
 
 ///// 2.  PERSISTENCIA
 const saveAns = o   => localStorage.setItem(LS_KEY, JSON.stringify(o));
@@ -436,7 +443,11 @@ function renderTab (tab, f) {
   } else {
     const colors = tab === 'apertura' ? ['green','red'] : ['red','green'];
     const filters = tab === 'apertura' ? omit(f, 'A9') : f;
-    drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors);
+    const domain = tab === 'apertura' ? [0,100] : null;
+    drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors, domain);
+    if (tab === 'apertura') {
+      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de apertura en público por países</h3>');
+    }
   }
 
   const charts = document.createElement('div');
@@ -465,11 +476,11 @@ function renderTab (tab, f) {
 
   if (tab === 'apertura') {
     const barData = ['B5_A','B5_B','B5_C','B5_D']
-      .map(v => ({ label: v, value: pct(v, chartFilters) }));
+      .map(v => ({ label: B5_ES[v], value: pct(v, chartFilters) }));
     drawBars(
       charts.appendChild(Object.assign(document.createElement('div'), { className: 'bar-chart' })),
       barData,
-      'Porcentaje "Selected"'
+      'Porcentaje de ocultación del colectivo en…'
     );
   }
 
