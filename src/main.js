@@ -123,7 +123,15 @@ function preloadForm (o) {
 const isOne = v => {
   if (v == null || v === '') return false;
   if (v === 'Selected' || v === 'Yes') return true;
-  const neg = ['Never','At no time','Not applicable','Prefer not to say','Don\u2019t know'];
+  if (v === 'Not Selected' || v === 'No') return false;
+  const neg = [
+    'Never',
+    'At no time',
+    'Not applicable',
+    "Haven\u2019t done this",
+    'Prefer not to say',
+    "Don\u2019t know"
+  ];
   return !neg.includes(v);
 };
 
