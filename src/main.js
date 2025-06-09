@@ -318,27 +318,46 @@ function drawBars (target, data, title) {
   const x = d3.scaleLinear([0, d3.max(data, d => d.value)], [m.left, w - m.right]);
   const y = d3.scaleBand(data.map(d => d.label), [m.top, h - m.bottom]).padding(0.1);
 
-  svg.append('g')
-     .selectAll('rect')
-     .data(data)
-     .join('rect')
-       .attr('x', m.left)
-       .attr('y', d => y(d.label))
-       .attr('height', y.bandwidth())
-       .attr('width', d => x(d.value) - m.left)
-       .attr('fill', '#00cfe8')
-       .append('title')
-         .text(d => `${d.count} de ${d.total}`);
+  const bars = svg.append('g')
+                 .selectAll('rect')
+                 .data(data)
+                 .join('rect')
+                   .attr('x', m.left)
+                   .attr('y', d => y(d.label))
+                   .attr('height', y.bandwidth())
+                   .attr('width', 0)
+                   .attr('fill', '#00cfe8');
 
-  svg.append('g')
-     .selectAll('text.bar-label')
-     .data(data)
-     .join('text')
-       .attr('class', 'bar-label')
-       .attr('x', d => x(d.value) + 4)
-       .attr('y', d => y(d.label) + y.bandwidth() / 2)
-       .attr('dy', '.35em')
-       .text(d => d3.format('.0%')(d.value));
+  bars.append('title')
+      .text(d => `${d.count} de ${d.total}`);
+
+  const finalWidth = d => x(d.value) - m.left;
+  if (!document.documentElement.classList.contains('no-motion')) {
+    bars.transition()
+        .duration(750)
+        .attr('width', finalWidth);
+  } else {
+    bars.attr('width', finalWidth);
+  }
+
+  const lbls = svg.append('g')
+                  .selectAll('text.bar-label')
+                  .data(data)
+                  .join('text')
+                    .attr('class', 'bar-label')
+                    .attr('x', m.left + 4)
+                    .attr('y', d => y(d.label) + y.bandwidth() / 2)
+                    .attr('dy', '.35em')
+                    .text(d => d3.format('.0%')(d.value));
+
+  const labelX = d => x(d.value) + 4;
+  if (!document.documentElement.classList.contains('no-motion')) {
+    lbls.transition()
+        .duration(750)
+        .attr('x', labelX);
+  } else {
+    lbls.attr('x', labelX);
+  }
 
   svg.append('g')
      .selectAll('text.bar-name')
