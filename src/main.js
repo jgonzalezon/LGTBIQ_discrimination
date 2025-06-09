@@ -117,7 +117,8 @@ function choroplethByCountry (tabOrVar, f) {
     if (!cc) return;
 
     if (tabOrVar === 'H1') {
-      if (r.H1 != null && r.H1 !== '') (map[cc] ??= []).push(+r.H1);
+      const val = +r.H1;
+      if (!Number.isNaN(val)) (map[cc] ??= []).push(val);
     } else {
       const score = d3.mean(VARS, v => +isOne(r[v]));
       (map[cc] ??= []).push(score);
@@ -140,8 +141,9 @@ function drawMap (target, geo, metrics) {
   const proj  = d3.geoMercator().fitSize([w, h - 40], geo);
   const path  = d3.geoPath().projection(proj);
 
-  const vals = Object.values(metrics).filter(v => v != null);
-  const min = d3.min(vals), max = d3.max(vals);
+  const vals = Object.values(metrics).filter(v => Number.isFinite(v));
+  const min = vals.length ? d3.min(vals) : 0;
+  const max = vals.length ? d3.max(vals) : 10;
   const color = d3.scaleLinear()
                  .domain([min, max])
                  .range(['red', 'green']);
