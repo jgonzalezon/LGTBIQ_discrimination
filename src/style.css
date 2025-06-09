@@ -95,7 +95,7 @@ input[type="email"]{
   width:100%;
   max-width:2060px;
   height:1125px;
-  margin:10px auto 0;          /* pegado a los donuts */
+  margin:0 auto;                /* sin espacio alrededor */
 }
 #viz-container .map h3{
   margin:0 0 5px; text-align:center; color:#fff;
