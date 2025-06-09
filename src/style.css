@@ -90,11 +90,12 @@ input[type="email"]{
 #tabs button:not(.active)    { background:#00cfe8; color:#000; }
 
 /* mapa GRANDE (+ espacio arriba para tabs) */
+#viz-container{ display:flex; flex-direction:column; align-items:center; }
 #viz-container .map{
   width:100%;
-  max-width:1650px;
-  height:900px;
-  margin:20px auto 20px;      /* menos espacio bajo el mapa */
+  max-width:2060px;
+  height:1125px;
+  margin:20px auto 10px;      /* menos espacio bajo el mapa */
 }
 #viz-container .map h3{
   margin:0 0 10px; text-align:center; color:#fff;
@@ -102,7 +103,7 @@ input[type="email"]{
 
 #viz-container .charts{
   display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
-  margin-top:10px;                   /* menor separación respecto al mapa */
+  margin-top:5px;                    /* menor separación respecto al mapa */
 }
 #viz-container .charts>div:not(.donuts){
   background:#000;
@@ -125,7 +126,7 @@ input[type="email"]{
   height:auto;
 }
 .donut-label{
-  font-size:1.2rem;
+  font-size:0.6rem;
   fill:#fff;
   pointer-events:none;
 }
@@ -149,7 +150,7 @@ input[type="email"]{
 /* leyenda */
 #map-legend{
   width:260px; height:14px; margin:10px auto 0;
-  display:block; border:1px solid #333;
+  display:block; border:1px solid #fff;
 }
 #legend-labels{
   width:260px; margin:4px auto 30px;
@@ -169,5 +170,5 @@ input[type="email"]{
 
 /* ==== RESPONSIVE ==== */
 @media (max-width:600px){
-  #viz-container .map{ height:420px; }
+  #viz-container .map{ height:525px; }
 }
