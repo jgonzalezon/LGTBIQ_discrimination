@@ -256,9 +256,10 @@ input[type="email"]{
   bottom:0; left:0; width:100%;
   text-align:center;
   margin:0; padding:10px 100px 10px 0;
-  font-size:1.8rem; /* doble tamaño */
+  font-size:1.35rem; /* 75% del tamaño anterior */
   color:#fff;
   background:gray;
   opacity:0.9;
+  z-index:1000;                 /* por delante de los gráficos */
 }
 #page-footer a{ color:#ccc; }
