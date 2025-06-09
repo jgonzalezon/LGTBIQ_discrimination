@@ -146,6 +146,12 @@ const E3_ORDER = [
 const E3_VALUES_NO_NA = E3_VALUES.filter(v => v !== 'Not applicable');
 const E3_ORDER_NO_NA = E3_ORDER.filter(v => v !== 'Not applicable');
 
+const E3_COLORS = {
+  'Physical attack': '#ffa500',             // naranja
+  'Sexual attack': '#ff8c00',               // naranja oscuro
+  'Physical and sexual attack': '#ff0000'   // rojo intenso
+};
+
 const E3_ES = {
   'Physical attack': 'Ataque f\u00edsico',
   'Sexual attack': 'Ataque sexual',
@@ -500,14 +506,15 @@ function drawDonut (target, val, title) {
      .text(d3.format('.0%')(val));
 }
 
-function colorFor(label, order) {
+function colorFor(label, order, extraColors = null) {
+  if (extraColors && extraColors[label]) return extraColors[label];
   if (SPECIAL_COLORS[label]) return SPECIAL_COLORS[label];
   const i = order.indexOf(label);
   const t = i < 0 ? 0 : i / (order.length - 1);
   return d3.interpolateRdYlGn(t);
 }
 
-function drawDonutDist (target, data, title, order, labels = {}) {
+function drawDonutDist (target, data, title, order, labels = {}, colorMap = null) {
   const w = 360, h = 360, r = 140;
   const div = d3.select(target).html('');
   if (title) div.append('h4').text(title);
@@ -519,7 +526,7 @@ function drawDonutDist (target, data, title, order, labels = {}) {
                 .append('g')
                 .attr('transform', `translate(${w/2},${h/2})`);
 
-  const color = label => colorFor(label, order);
+  const color = label => colorFor(label, order, colorMap);
   const pie = d3.pie().value(d => d.value);
   const arc = d3.arc().innerRadius(r * 0.6).outerRadius(r);
 
@@ -649,7 +656,7 @@ function renderTab (tab, f) {
     drawMap(mapDiv, GEO, choroplethByCountry('H1', omit(f, 'A9')), ['red','green'], [0,10]);
     mapDiv.insertAdjacentHTML('afterbegin', '<h3>Felicidad general del colectivo</h3>');
   } else {
-    const colors = tab === 'apertura' ? ['green','red'] : ['red','green'];
+    const colors = (tab === 'apertura' || tab === 'violencia') ? ['green','red'] : ['red','green'];
     const filters = (tab === 'apertura' || tab === 'violencia') ? omit(f, 'A9') : f;
     const domain = (tab === 'apertura' || tab === 'violencia') ? [0,100] : null;
     const suffix = tab === 'apertura' ? ' % de ocultación' : '';
@@ -718,7 +725,8 @@ function renderTab (tab, f) {
       distribution('E3', chartFilters, E3_VALUES_NO_NA),
       'Tipo de ataque recibido',
       E3_ORDER_NO_NA,
-      E3_ES
+      E3_ES,
+      E3_COLORS
     );
     const barsDiv = vbox.appendChild(document.createElement('div'));
     drawStackedBars(
