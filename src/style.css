@@ -243,3 +243,12 @@ input[type="email"]{
 @media (max-width:600px){
   #viz-container .map{ height:525px; }
 }
+
+/* ===== FOOTER ===== */
+#page-footer{
+  text-align:center;
+  margin:20px 0;
+  font-size:.9rem;
+  color:#ccc;
+}
+#page-footer a{ color:#ccc; }
