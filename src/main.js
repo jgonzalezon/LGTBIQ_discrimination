@@ -190,20 +190,23 @@ function choroplethByCountry (tabOrVar, f) {
       const val = +r.H1;
       if (!Number.isNaN(val)) (map[cc] ??= []).push(val);
     } else if (tabOrVar === 'apertura') {
-      const anySel = VARS.some(v => isOne(r[v]));
-      (map[cc] ??= []).push(anySel ? 100 : 0);
+      const b5 = VARS.some(v => isOne(r[v])) ? 1 : 0;
+      (map[cc] ??= []).push(b5);
     } else {
       const score = d3.mean(VARS, v => +isOne(r[v])) * 100;
       (map[cc] ??= []).push(score);
     }
   });
 
-  Object.keys(map).forEach(k => (map[k] = d3.mean(map[k])));
+  Object.keys(map).forEach(k => {
+    const mean = d3.mean(map[k]);
+    map[k] = tabOrVar === 'apertura' ? mean * 100 : mean;
+  });
   return map;
 }
 
 ///// 5.  D3 – DRAWERS (sin cambios)
-function drawMap (target, geo, metrics, colors = ['red', 'green']) {
+function drawMap (target, geo, metrics, colors = ['red', 'green'], domain = null) {
   const w = target.clientWidth || 900;
   const h = target.clientHeight || 660;
 
@@ -217,8 +220,8 @@ function drawMap (target, geo, metrics, colors = ['red', 'green']) {
   const path  = d3.geoPath().projection(proj);
 
   const vals = Object.values(metrics).filter(v => Number.isFinite(v));
-  const min = vals.length ? d3.min(vals) : 0;
-  const max = vals.length ? d3.max(vals) : 10;
+  const min = domain ? domain[0] : (vals.length ? d3.min(vals) : 0);
+  const max = domain ? domain[1] : (vals.length ? d3.max(vals) : 10);
   const color = d3.scaleLinear()
                  .domain([min, max])
                  .range(colors);
@@ -393,11 +396,12 @@ function renderTab (tab, f) {
   mapDiv.className = 'map';
   vc.appendChild(mapDiv);
   if (tab === 'mental') {
-    drawMap(mapDiv, GEO, choroplethByCountry('H1', omit(f, 'A9')));
+    drawMap(mapDiv, GEO, choroplethByCountry('H1', omit(f, 'A9')), ['red','green'], [0,10]);
     mapDiv.insertAdjacentHTML('afterbegin', '<h3>Felicidad general del colectivo</h3>');
   } else {
     const colors = tab === 'apertura' ? ['green','red'] : ['red','green'];
-    drawMap(mapDiv, GEO, choroplethByCountry(tab, f), colors); // mapa = métricas globales
+    const filters = tab === 'apertura' ? omit(f, 'A9') : f;
+    drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors);
   }
 
   const charts = document.createElement('div');
