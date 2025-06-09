@@ -104,12 +104,30 @@ input[type="email"]{
   display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
   margin-top:10px;                   /* menor separación respecto al mapa */
 }
-#viz-container .charts>div{
+#viz-container .charts>div:not(.donuts){
   background:#000;
   padding:1rem;
   border:none;
   border-radius:0;
   text-align:center;
+}
+.donuts{
+  display:flex;
+  gap:2rem;
+  width:100%;
+}
+.donuts>div{
+  flex:1 1 0;
+  max-width:500px;
+}
+.donuts svg{
+  width:100%;
+  height:auto;
+}
+.donut-label{
+  font-size:1.2rem;
+  fill:#fff;
+  pointer-events:none;
 }
 
 .donut-legend{

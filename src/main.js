@@ -47,6 +47,27 @@ const H3_VALUES = [
   'Don\u2019t know'
 ];
 
+const H2_ORDER = [
+  'All the time',
+  'Most of the time',
+  'More than half of the time',
+  'Less than half of the time',
+  'Some of the time',
+  'At no time'
+];
+
+const H3_ORDER = [
+  'Always',
+  'Often',
+  'Rarely',
+  'Never'
+];
+
+const SPECIAL_COLORS = {
+  'Prefer not to say': '#800080', // morado
+  'Don\u2019t know': '#8B4513'      // marrón
+};
+
 ///// 2.  PERSISTENCIA
 const saveAns = o   => localStorage.setItem(LS_KEY, JSON.stringify(o));
 const loadAns = ()  => JSON.parse(localStorage.getItem(LS_KEY) || 'null');
@@ -274,18 +295,26 @@ function drawDonut (target, val, title) {
      .text(d3.format('.0%')(val));
 }
 
-function drawDonutDist (target, data, title, scale = 1) {
-  const baseW = 640, baseR = 240;
-  const w = baseW * scale, h = baseW * scale, r = baseR * scale;
+function colorFor(label, order) {
+  if (SPECIAL_COLORS[label]) return SPECIAL_COLORS[label];
+  const i = order.indexOf(label);
+  const t = i < 0 ? 0 : i / (order.length - 1);
+  return d3.interpolateRdYlGn(t);
+}
+
+function drawDonutDist (target, data, title, order) {
+  const w = 360, h = 360, r = 140;
   const div = d3.select(target).html('');
   if (title) div.append('h4').text(title);
 
-  const svg = div.append('svg').attr('viewBox', [0, 0, w, h])
+  const svg = div.append('svg')
+                .attr('viewBox', [0, 0, w, h])
+                .attr('width', '100%')
+                .attr('height', '100%')
                 .append('g')
                 .attr('transform', `translate(${w/2},${h/2})`);
 
-  const color = d3.scaleOrdinal(d3.schemeCategory10)
-                  .domain(data.map(d => d.label));
+  const color = label => colorFor(label, order);
   const pie = d3.pie().value(d => d.value);
   const arc = d3.arc().innerRadius(r * 0.6).outerRadius(r);
 
@@ -304,6 +333,16 @@ function drawDonutDist (target, data, title, scale = 1) {
         const i = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
         return t => arc(i(t));
       });
+
+  const total = d3.sum(data, d => d.value);
+  svg.selectAll('text')
+     .data(pie(data))
+     .join('text')
+       .attr('class', 'donut-label')
+       .attr('transform', d => `translate(${arc.centroid(d)})`)
+       .attr('text-anchor', 'middle')
+       .attr('dy', '.35em')
+       .text(d => d.data.value ? d3.format('.0%')(d.data.value / total) : '');
 
   const legend = div.append('ul').attr('class', 'donut-legend');
   legend.selectAll('li')
@@ -339,16 +378,20 @@ function renderTab (tab, f) {
   vc.appendChild(charts);
 
   if (tab === 'mental') {
+    const donuts = document.createElement('div');
+    donuts.className = 'donuts';
+    charts.appendChild(donuts);
     drawDonutDist(
-      charts.appendChild(document.createElement('div')),
+      donuts.appendChild(document.createElement('div')),
       distribution('H2', chartFilters, H2_VALUES),
       'Depresión en las últimas dos semanas',
-      0.5
+      H2_ORDER
     );
     drawDonutDist(
-      charts.appendChild(document.createElement('div')),
+      donuts.appendChild(document.createElement('div')),
       distribution('H3', chartFilters, H3_VALUES),
-      'Intentos de suicidio en el último año'
+      'Intentos de suicidio en el último año',
+      H3_ORDER
     );
   }
 
