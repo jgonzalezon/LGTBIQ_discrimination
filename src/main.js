@@ -170,6 +170,16 @@ function pct (variable, f) {
   return rows.length ? ones / rows.length : 0;
 }
 
+function pctInfo(variable, f) {
+  const rows = filteredRows(f);
+  const ones = rows.filter(r => isOne(r[variable])).length;
+  return {
+    pct: rows.length ? ones / rows.length : 0,
+    count: ones,
+    total: rows.length
+  };
+}
+
 function distribution (variable, f, categories) {
   const rows = filteredRows(f);
   const counts = new Map();
@@ -316,7 +326,9 @@ function drawBars (target, data, title) {
        .attr('y', d => y(d.label))
        .attr('height', y.bandwidth())
        .attr('width', d => x(d.value) - m.left)
-       .attr('fill', '#00cfe8');
+       .attr('fill', '#00cfe8')
+       .append('title')
+         .text(d => `${d.count} de ${d.total}`);
 
   svg.append('g')
      .selectAll('text.bar-label')
@@ -446,7 +458,7 @@ function renderTab (tab, f) {
     const domain = tab === 'apertura' ? [0,100] : null;
     drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors, domain);
     if (tab === 'apertura') {
-      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de apertura en público por países</h3>');
+      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de cultura/ocultación por países</h3>');
     }
   }
 
@@ -476,7 +488,15 @@ function renderTab (tab, f) {
 
   if (tab === 'apertura') {
     const barData = ['B5_A','B5_B','B5_C','B5_D']
-      .map(v => ({ label: B5_ES[v], value: pct(v, chartFilters) }));
+      .map(v => {
+        const info = pctInfo(v, chartFilters);
+        return {
+          label: B5_ES[v],
+          value: info.pct,
+          count: info.count,
+          total: info.total
+        };
+      });
     drawBars(
       charts.appendChild(Object.assign(document.createElement('div'), { className: 'bar-chart' })),
       barData,
