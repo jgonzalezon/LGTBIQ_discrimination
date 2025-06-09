@@ -808,14 +808,12 @@ function showDashboard (filters) {
     tabs.appendChild(b);
   });
 
-  const backBtn = document.createElement('button');
-  backBtn.id = 'back-btn';
-  backBtn.textContent = 'Volver al cuestionario';
+  const backBtn = document.getElementById('back-btn');
+  backBtn.style.display = '';
 
   dash.append(
     tabs,
-    Object.assign(document.createElement('div'), { id: 'viz-container' }),
-    backBtn
+    Object.assign(document.createElement('div'), { id: 'viz-container' })
   );
 
   tabs.onclick = e => {
@@ -830,6 +828,7 @@ function showDashboard (filters) {
   backBtn.onclick = () => {
     dash.classList.add('hidden');
     formWrap.classList.remove('hidden');
+    backBtn.style.display = 'none';
     form.elements.age.focus();
   };
 }

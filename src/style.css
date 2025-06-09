@@ -235,7 +235,8 @@ input[type="email"]{
 
 /* botón “Volver al cuestionario” */
 #back-btn{
-  position:fixed; bottom:24px; right:24px;
+  display:none;
+  position:absolute; right:24px; top:50%; transform:translateY(-50%);
   padding:16px 28px;                 /* 200% */
   font-size:2rem;                    /* 200% */
   background:#00cfe8; color:#000;
@@ -254,7 +255,7 @@ input[type="email"]{
   position:fixed;
   bottom:0; left:0; width:100%;
   text-align:center;
-  margin:0; padding:10px 0;
+  margin:0; padding:10px 100px 10px 0;
   font-size:1.8rem; /* doble tamaño */
   color:#fff;
   background:gray;
