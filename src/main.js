@@ -252,7 +252,7 @@ function drawMap (target, geo, metrics) {
   grad.append('stop').attr('offset', '0%').attr('stop-color', color(min));
   grad.append('stop').attr('offset', '100%').attr('stop-color', color(max));
 
-  const legendW = w * 0.75;
+  const legendW = w * 0.5;
 
   svg.append('rect')
      .attr('id', 'map-legend')
