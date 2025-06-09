@@ -30,6 +30,17 @@ html, body{
   transform:translateY(-50%);
 }
 
+.intro-question{
+  position:absolute;
+  top:15%;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:2rem;
+  color:#fff;
+  text-align:center;
+  z-index:11;
+}
+
 #start-button{
   z-index:11;                         /* sobre la bandera */
   background:rgba(0,123,255,.9);
