@@ -202,13 +202,10 @@ const F1_VAR_ES = {
 };
 
 const DISCRIM_VARS = [
-  'C1_E','C1_F',
   'D1_2_a','D1_2_b','D1_2_c','D1_2_d','D1_2_e'
 ];
 
 const DISCRIM_ES = {
-  'C1_E': 'Personal educativo',
-  'C1_F': 'Bares o discotecas',
   'D1_2_a': 'Buscar trabajo',
   'D1_2_b': 'En el trabajo',
   'D1_2_c': 'Buscar vivienda',
@@ -693,9 +690,11 @@ function renderTab (tab, f) {
           : '';
     drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors, domain, suffix);
     if (tab === 'apertura') {
-      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de cultura/ocultación por países</h3>');
+      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de apertura/ocultación por países</h3>');
+    } else if (tab === 'violencia') {
+      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Violencia sobre el colectivo</h3>');
     } else if (tab === 'discriminacion') {
-      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de discriminación por países</h3>');
+      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Discriminación sobre el colectivo</h3>');
     }
   }
 
