@@ -6,13 +6,10 @@
     <title>LGTBIQ_discrimination</title>
     <link rel="stylesheet" href="./src/style.css" />
   </head>
+
   <body>
     <div id="intro">
-      <img
-        id="intro-image"
-        src="./src/assets/rainbow.svg"
-        alt="Bandera arcoíris"
-      />
+      <img id="intro-image" src="./src/assets/rainbow.svg" alt="Bandera arcoíris" />
       <button id="start-button">¿Cómo cambiaría mi vida si fuera...?</button>
     </div>
 
@@ -20,28 +17,37 @@
       <form id="data-form">
         <fieldset id="dynamic-fields">
           <legend>Cuestionario</legend>
+
           <label for="age">Edad</label>
           <select id="age" name="age"></select>
+
           <label for="A9">País de residencia</label>
           <select id="A9" name="A9"></select>
-          <label for="A12">País de nacimiento</label>
-          <select id="A12" name="A12"></select>
+
+          <!-- A12 eliminado -->
+
           <label for="G1">Nivel educativo</label>
           <select id="G1" name="G1"></select>
+
           <label for="G2">Situación laboral</label>
           <select id="G2" name="G2"></select>
+
           <label for="G19">Llegar a fin de mes</label>
           <select id="G19" name="G19"></select>
+
           <label for="RESPONDENT_SO">Orientación sexual</label>
           <select id="RESPONDENT_SO" name="RESPONDENT_SO"></select>
+
           <label for="RESPONDENT_GIE">Identidad de género</label>
           <select id="RESPONDENT_GIE" name="RESPONDENT_GIE"></select>
         </fieldset>
+
         <button type="submit">Enviar datos</button>
       </form>
     </div>
 
     <section id="dashboard" class="hidden"></section>
+
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script type="module" src="./src/main.js"></script>
   </body>

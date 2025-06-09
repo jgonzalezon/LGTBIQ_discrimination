@@ -1,89 +1,55 @@
-/* src/style.css */
+/* ──────────────────────────────────────────
+   src/style.css   –  versión 07-Jun-2025
+   ────────────────────────────────────────── */
 
-/* ===== Estilo global de html y body ===== */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background-color: #000; /* en caso de que la imagen no cargue */
-  font-family: sans-serif;
-  color: #fff;
+/* ===== RESET BÁSICO ===== */
+html, body{
+  margin:0;
+  padding:0;
+  height:100%;
+  background:#000;
+  font-family:sans-serif;
+  color:#fff;
 }
 
-/* ===== Contenedor INTRO (pantalla completa, bandera de fondo) ===== */
-#intro {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  background: #000;
+/* ========== CAPAS PRINCIPALES ========== */
+#intro          { position:fixed; inset:0; z-index:10; display:flex; justify-content:center; align-items:center; overflow:hidden; }
+#form-container { position:fixed; z-index:20; }      /* centrado con transform… (ver más abajo) */
+#dashboard      { position:fixed; inset:0; z-index:30; overflow:auto; }
+
+/* ocultar cualquier capa */
+.hidden{ display:none!important; z-index:0!important; }
+
+/* ===== INTRO (bandera + botón) ===== */
+#intro-image{
+  width:100vw!important;
+  height:33.33vh!important;
+  object-fit:fill!important;
+  position:absolute;
+  top:50%; left:0;
+  transform:translateY(-50%);
 }
 
-/* ► aquí los cambios importantes */
-#intro-image {
-  max-width: none !important;
-  max-height: none !important;
-  width: 100vw !important;
-  height: 33.33vh !important;
-  object-fit: fill !important;
-  object-position: center;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  z-index: 0;
+#start-button{
+  z-index:11;                         /* sobre la bandera */
+  background:rgba(0,123,255,.9);
+  color:#fff;
+  border:none;
+  padding:20px 40px;
+  font-size:2rem;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.3s transform, .5s opacity;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
 }
+#start-button:hover{ transform:scale(1.05); }
+#start-button.faded{ opacity:0; }
 
-/* ===== Botón grande centrado sobre la bandera ===== */
-#start-button {
-  position: relative;
-  z-index: 1;
-  background-color: rgba(0, 123, 255, 0.9); /* tono azul semitransparente */
-  color: #fff;
-  border: none;
-  padding: 20px 40px;
-  font-size: 2rem;           /* tamaño de texto mayor */
-  border-radius: 8px;
-  cursor: pointer;
-  transition: opacity 0.5s ease, transform 0.3s ease;
-  /* Una ligera sombra para que resalte sobre la bandera */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Efecto hover para que se note que es clicable */
-#start-button:hover {
-  transform: scale(1.05);
-}
-
-/* Al hacer fade-out, bajamos opacidad a 0 */
-#start-button.faded {
-  opacity: 0;
-}
-
-/* ===== Formulario oculto inicialmente ===== */
-.hidden {
-  display: none;
-  opacity: 0;
-}
-
-/* Cuando mostramos el formulario, le ponemos display:block y opacity:1 */
-#form-container.visible {
-  display: block;
-  opacity: 1;
-  transition: opacity 0.5s ease;
-  padding: 20px;
-}
-
-/* Estilo contenedor del formulario (aparece bajo #intro) */
-#form-container {
-  position: absolute;           /* ► centrado real, sin scroll */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 800px;
+/* ===== FORMULARIO ===== */
+#form-container{
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  max-width:800px;
   background:#111;
   border:1px solid #333;
   border-radius:5px;
@@ -91,98 +57,74 @@ html, body {
   box-sizing:border-box;
 }
 
-/* ===== ESTILOS INTERNO DEL FORMULARIO ===== */
-fieldset {
-  border: 1px solid #444;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-}
-
-legend {
-  padding: 0 10px;
-  font-weight: bold;
-  color: #ddd;
-}
-
-label {
-  display: block;
-  margin-top: 10px;
-  color: #ccc;
-}
+fieldset{ border:1px solid #444; padding:15px; margin-bottom:20px; border-radius:4px; }
+legend  { padding:0 10px; font-weight:bold; color:#ddd; }
+label   { display:block; margin-top:10px; color:#ccc; }
 
 select,
 input[type="text"],
 input[type="number"],
-input[type="email"] {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border-radius: 3px;
-  border: 1px solid #555;
-  background-color: #222;
-  color: #fff;
-  box-sizing: border-box;
+input[type="email"]{
+  width:100%; padding:8px; margin-top:5px;
+  border-radius:3px; border:1px solid #555;
+  background:#222; color:#fff; box-sizing:border-box;
 }
 
-.checkbox-group input[type="checkbox"] {
-  margin-right: 5px;
+#data-form button[type="submit"]{
+  background:#007bff; color:#fff;
+  border:none; padding:12px 20px; font-size:1rem;
+  border-radius:5px; cursor:pointer; margin-top:10px;
+  transition:background-color .3s ease;
+}
+#data-form button[type="submit"]:hover{ background:#0056b3; }
+
+/* ===== DASHBOARD ===== */
+#tabs{
+  display:flex; gap:6px; justify-content:center;
+  margin:16px 0;
+}
+#tabs button{
+  border:none; padding:2px 6px; font-size:14px; cursor:pointer;
+}
+#tabs button.active          { background:#ffe46b; color:#000; }
+#tabs button:not(.active)    { background:#00cfe8; color:#000; }
+
+/* mapa GRANDE (+ espacio arriba para tabs) */
+#viz-container .map{
+  width:100%; max-width:1100px;
+  height:600px;
+  margin:20px auto 40px;      /* 20 px top deja hueco tras tabs */
 }
 
-.checkbox-group label {
-  display: inline-block;
-  margin-right: 15px;
-  color: #ccc;
+#viz-container .charts{
+  display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
+}
+#viz-container .charts>div{
+  background:#b5ffff; padding:1rem;
 }
 
-#data-form button[type="submit"] {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  font-size: 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
-}
-
-#data-form button[type="submit"]:hover {
-  background-color: #0056b3;
-}
-
-
-/* ==== DASHBOARD ==== */
-#viz-container .map   { width: 100%; max-width: 900px; height: 420px; margin: 60px auto 40px; }
-#viz-container .charts{ display:flex;gap:2rem;justify-content:center;flex-wrap:wrap; }
-#viz-container .charts>div{ background:#b5ffff;padding:1rem; }
-
-/* Tabs */
-#tabs{display:flex;gap:4px;margin-left:8px;}
-#tabs button{border:none;padding:2px 6px;font-size:14px;cursor:pointer}
-#tabs button.active{background:#ffe46b;color:#000}
-#tabs button:not(.active){background:#00cfe8;color:#000}
-
-/* --- CENTRAR DASHBOARD --- */
-#dashboard{
-  position:absolute;
-  inset:0;                /* ocupa toda la pantalla */
-  overflow:auto;          /* scroll si el contenido crece */
-}
-
-/* Leyenda del mapa */
+/* leyenda */
 #map-legend{
-  width:260px;
-  height:14px;
-  margin:10px auto 0;
-  display:block;
-  border:1px solid #333;
+  width:260px; height:14px; margin:10px auto 0;
+  display:block; border:1px solid #333;
 }
 #legend-labels{
-  width:260px;
-  margin:4px auto 30px;
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  color:#fff;
+  width:260px; margin:4px auto 30px;
+  display:flex; justify-content:space-between;
+  font-size:12px; color:#fff;
+}
+
+/* botón “Volver al cuestionario” */
+#back-btn{
+  position:fixed; bottom:24px; right:24px;
+  padding:8px 14px;
+  background:#00cfe8; color:#000;
+  border:none; border-radius:4px; cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.4);
+}
+#back-btn:hover{ filter:brightness(1.1); }
+
+/* ==== RESPONSIVE ==== */
+@media (max-width:600px){
+  #viz-container .map{ height:420px; }
 }
