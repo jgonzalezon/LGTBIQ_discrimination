@@ -231,7 +231,7 @@ function choroplethByCountry (tabOrVar, f) {
 }
 
 ///// 5.  D3 – DRAWERS (sin cambios)
-function drawMap (target, geo, metrics, colors = ['red', 'green'], domain = null) {
+function drawMap (target, geo, metrics, colors = ['red', 'green'], domain = null, tooltipSuffix = '') {
   const w = target.clientWidth || 900;
   const h = target.clientHeight || 660;
 
@@ -269,11 +269,12 @@ function drawMap (target, geo, metrics, colors = ['red', 'green'], domain = null
          SELECTED_COUNTRY = SELECTED_COUNTRY === cc ? null : cc;
          renderTab(CURRENT_TAB, CURRENT_FILTERS);
        })
-       .append('title')
-         .text(d => {
-           const v = metrics[d.properties.ISO3];
-           return `${d.properties.NAME}: ${v != null ? d3.format('.1f')(v) : 'sin datos'}`;
-         });
+      .append('title')
+        .text(d => {
+          const v = metrics[d.properties.ISO3];
+          if (v == null) return `${d.properties.NAME}: sin datos`;
+          return `${d.properties.NAME}: ${d3.format('.1f')(v)}${tooltipSuffix}`;
+        });
 
   // leyenda (igual que antes) …
   const defs = svg.append('defs');
@@ -475,7 +476,8 @@ function renderTab (tab, f) {
     const colors = tab === 'apertura' ? ['green','red'] : ['red','green'];
     const filters = tab === 'apertura' ? omit(f, 'A9') : f;
     const domain = tab === 'apertura' ? [0,100] : null;
-    drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors, domain);
+    const suffix = tab === 'apertura' ? ' % de ocultación' : '';
+    drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors, domain, suffix);
     if (tab === 'apertura') {
       mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de cultura/ocultación por países</h3>');
     }
