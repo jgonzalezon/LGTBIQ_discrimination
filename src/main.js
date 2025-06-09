@@ -143,6 +143,9 @@ const E3_ORDER = [
   'Not applicable'
 ];
 
+const E3_VALUES_NO_NA = E3_VALUES.filter(v => v !== 'Not applicable');
+const E3_ORDER_NO_NA = E3_ORDER.filter(v => v !== 'Not applicable');
+
 const E3_ES = {
   'Physical attack': 'Ataque f\u00edsico',
   'Sexual attack': 'Ataque sexual',
@@ -699,25 +702,27 @@ function renderTab (tab, f) {
   }
 
   if (tab === 'violencia') {
-    const donuts = document.createElement('div');
-    donuts.className = 'donuts';
-    charts.appendChild(donuts);
+    const vbox = document.createElement('div');
+    vbox.className = 'violence-charts';
+    charts.appendChild(vbox);
+
     drawDonutDist(
-      donuts.appendChild(document.createElement('div')),
+      vbox.appendChild(document.createElement('div')),
       distribution('E1', chartFilters, E1_VALUES),
       'Número de ataques en los últimos 5 años',
       E1_ORDER,
       E1_ES
     );
     drawDonutDist(
-      donuts.appendChild(document.createElement('div')),
-      distribution('E3', chartFilters, E3_VALUES),
+      vbox.appendChild(document.createElement('div')),
+      distribution('E3', chartFilters, E3_VALUES_NO_NA),
       'Tipo de ataque recibido',
-      E3_ORDER,
+      E3_ORDER_NO_NA,
       E3_ES
     );
+    const barsDiv = vbox.appendChild(document.createElement('div'));
     drawStackedBars(
-      charts.appendChild(Object.assign(document.createElement('div'), { className: 'stacked-bars' })),
+      barsDiv,
       ['F1_A','F1_B','F1_C'],
       chartFilters,
       F1_VALUES,

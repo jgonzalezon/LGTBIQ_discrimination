@@ -173,7 +173,7 @@ input[type="email"]{
 }
 
 .stacked-bars{
-  max-width:600px;
+  max-width:500px;
 }
 .stacked-bars h4{
   text-align:center;
@@ -181,6 +181,25 @@ input[type="email"]{
   font-size:200%;
 }
 .stacked-bars svg{
+  width:100%;
+  height:auto;
+}
+
+.violence-charts{
+  display:flex;
+  gap:2rem;
+  width:100%;
+}
+.violence-charts>div{
+  flex:1 1 0;
+  max-width:500px;
+}
+.violence-charts h4{
+  text-align:center;
+  margin:0 0 8px;
+  font-size:200%;
+}
+.violence-charts svg{
   width:100%;
   height:auto;
 }
