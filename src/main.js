@@ -222,10 +222,13 @@ const loadAns = ()  => JSON.parse(localStorage.getItem(LS_KEY) || 'null');
 function buildAgeRanges () {
   const sel = document.getElementById('age');
   sel.innerHTML = '<option value="" disabled selected>Selecciona...</option>';
-  for (let a = 15; a <= 85; a += 5) {
-    sel.insertAdjacentHTML('beforeend', `<option value="${a}-${a+4}">${a}-${a+4}</option>`);
+  for (let a = 15; a <= 75; a += 10) {
+    sel.insertAdjacentHTML(
+      'beforeend',
+      `<option value="${a}-${a + 9}">${a}-${a + 9}</option>`
+    );
   }
-  sel.insertAdjacentHTML('beforeend', '<option value="90+">90 o más</option>');
+  sel.insertAdjacentHTML('beforeend', '<option value="85+">85 o más</option>');
 }
 
 function fillSelects () {
@@ -267,8 +270,8 @@ function filteredRows (f) {
 
     // edad
     if (f.age) {
-      if (f.age === '90+') {
-        if (+r.A1 < 90) return false;
+      if (f.age === '85+') {
+        if (+r.A1 < 85) return false;
       } else {
         const [a, b] = f.age.split('-');
         const n = +r.A1;
