@@ -95,7 +95,7 @@ input[type="email"]{
   width:100%;
   max-width:2060px;
   height:1125px;
-  margin:0 auto;                /* sin espacio alrededor */
+  margin:0 auto 10px;           /* 10px de separación inferior */
 }
 #viz-container .map h3{
   margin:0 0 5px; text-align:center; color:#fff;
@@ -155,11 +155,11 @@ input[type="email"]{
 
 /* leyenda */
 #map-legend{
-  width:260px; height:14px; margin:10px auto 0;
+  width:75%; height:14px; margin:10px auto 0;
   display:block; border:1px solid #fff;
 }
 #legend-labels{
-  width:260px; margin:4px auto 30px;
+  width:75%; margin:4px auto 30px;
   display:flex; justify-content:space-between;
   font-size:12px; color:#fff;
 }

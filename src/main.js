@@ -252,11 +252,13 @@ function drawMap (target, geo, metrics) {
   grad.append('stop').attr('offset', '0%').attr('stop-color', color(min));
   grad.append('stop').attr('offset', '100%').attr('stop-color', color(max));
 
+  const legendW = w * 0.75;
+
   svg.append('rect')
      .attr('id', 'map-legend')
-     .attr('x', (w - 260) / 2)
+     .attr('x', (w - legendW) / 2)
      .attr('y', h - 32)
-     .attr('width', 260)
+     .attr('width', legendW)
      .attr('height', 14)
      .attr('fill', 'url(#grad)');
 
@@ -265,7 +267,7 @@ function drawMap (target, geo, metrics) {
      .selectAll('text')
      .data([min, max])
      .join('text')
-       .attr('x', (d, i) => (w - 260) / 2 + (i ? 260 : 0))
+       .attr('x', (d, i) => (w - legendW) / 2 + (i ? legendW : 0))
        .attr('y', h - 6)
        .attr('text-anchor', (d, i) => i ? 'end' : 'start')
        .text(d => d3.format('.0f')(d));
