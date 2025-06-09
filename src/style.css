@@ -90,7 +90,12 @@ input[type="email"]{
 #tabs button:not(.active)    { background:#00cfe8; color:#000; }
 
 /* mapa GRANDE (+ espacio arriba para tabs) */
-#viz-container{ display:flex; flex-direction:column; align-items:center; }
+#viz-container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding-bottom:150px; /* espacio extra para que el footer se solape */
+}
 #viz-container .map{
   width:100%;
   max-width:2060px;
@@ -250,8 +255,9 @@ input[type="email"]{
   bottom:0; left:0; width:100%;
   text-align:center;
   margin:0; padding:10px 0;
-  font-size:.9rem;
-  color:#ccc;
-  background:#000;
+  font-size:1.8rem; /* doble tamaño */
+  color:#fff;
+  background:gray;
+  opacity:0.9;
 }
 #page-footer a{ color:#ccc; }
