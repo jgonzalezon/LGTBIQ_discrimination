@@ -863,6 +863,7 @@ function showDashboard (filters) {
 
 ///// 8.  EVENTOS
 respectReducedMotion();
+animateIntro();
 
 btnStart.onclick = () => {
   intro.classList.add('hidden');
@@ -891,4 +892,31 @@ function respectReducedMotion () {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.documentElement.classList.add('no-motion');
   }
+}
+
+function animateIntro () {
+  const q    = document.querySelector('.intro-question');
+  const flag = document.getElementById('intro-image');
+  const btn  = document.getElementById('start-button');
+  const text = q.textContent.trim();
+
+  if (document.documentElement.classList.contains('no-motion')) {
+    q.textContent = text;
+    flag.classList.add('show');
+    btn.classList.add('show');
+    return;
+  }
+
+  q.textContent = '';
+  let i = 0;
+  (function type(){
+    q.textContent += text[i];
+    i++;
+    if (i < text.length) {
+      setTimeout(type, 80);
+    } else {
+      flag.classList.add('show');
+      btn.classList.add('show');
+    }
+  })();
 }

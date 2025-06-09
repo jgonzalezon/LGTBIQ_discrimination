@@ -27,7 +27,13 @@ html, body{
   object-fit:fill!important;
   position:absolute;
   top:50%; left:0;
-  transform:translateY(-50%);
+  transform:translate(-100%, -50%);
+  opacity:0;
+  transition:transform 1.5s ease-out, opacity 1.5s ease-out;
+}
+#intro-image.show{
+  transform:translate(0, -50%);
+  opacity:1;
 }
 
 .intro-question{
@@ -50,9 +56,11 @@ html, body{
   font-size:2rem;
   border-radius:8px;
   cursor:pointer;
+  opacity:0;
   transition:.3s transform, .5s opacity;
   box-shadow:0 4px 12px rgba(0,0,0,.3);
 }
+#start-button.show{ opacity:1; }
 #start-button:hover{ transform:scale(1.05); }
 #start-button.faded{ opacity:0; }
 
