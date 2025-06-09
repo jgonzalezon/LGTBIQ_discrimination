@@ -201,6 +201,21 @@ const F1_VAR_ES = {
   'F1_C': 'Gestos intimidantes'
 };
 
+const DISCRIM_VARS = [
+  'C1_E','C1_F',
+  'D1_2_a','D1_2_b','D1_2_c','D1_2_d','D1_2_e'
+];
+
+const DISCRIM_ES = {
+  'C1_E': 'Personal educativo',
+  'C1_F': 'Bares o discotecas',
+  'D1_2_a': 'Buscar trabajo',
+  'D1_2_b': 'En el trabajo',
+  'D1_2_c': 'Buscar vivienda',
+  'D1_2_d': 'Servicios de salud/sociales',
+  'D1_2_e': 'Personal educativo (otra)'
+};
+
 
 ///// 2.  PERSISTENCIA
 const saveAns = o   => localStorage.setItem(LS_KEY, JSON.stringify(o));
@@ -308,7 +323,8 @@ function omit (obj, key) {
 function choroplethByCountry (tabOrVar, f) {
   const VARS = {
     apertura:  ['B5_A','B5_B','B5_C','B5_D'],
-    violencia: ['E1','F1_A','F1_B','F1_C']
+    violencia: ['E1','F1_A','F1_B','F1_C'],
+    discriminacion: DISCRIM_VARS
   }[tabOrVar];
 
   const map = {};                // { ISO3:[scores] }
@@ -328,6 +344,9 @@ function choroplethByCountry (tabOrVar, f) {
     } else if (tabOrVar === 'violencia') {
       const experienced = VARS.some(v => r[v] && r[v] !== 'Never') ? 1 : 0;
       (map[cc] ??= []).push(experienced);
+    } else if (tabOrVar === 'discriminacion') {
+      const any = VARS.some(v => isOne(r[v])) ? 1 : 0;
+      (map[cc] ??= []).push(any);
     } else {
       const score = d3.mean(VARS, v => +isOne(r[v])) * 100;
       (map[cc] ??= []).push(score);
@@ -336,7 +355,7 @@ function choroplethByCountry (tabOrVar, f) {
 
   Object.keys(map).forEach(k => {
     const mean = d3.mean(map[k]);
-    map[k] = (tabOrVar === 'apertura' || tabOrVar === 'violencia')
+    map[k] = (tabOrVar === 'apertura' || tabOrVar === 'violencia' || tabOrVar === 'discriminacion')
       ? mean * 100
       : mean;
   });
@@ -661,17 +680,22 @@ function renderTab (tab, f) {
     drawMap(mapDiv, GEO, choroplethByCountry('H1', omit(f, 'A9')), ['red','green'], [0,10]);
     mapDiv.insertAdjacentHTML('afterbegin', '<h3>Felicidad general del colectivo</h3>');
   } else {
-    const colors = (tab === 'apertura' || tab === 'violencia') ? ['green','red'] : ['red','green'];
-    const filters = (tab === 'apertura' || tab === 'violencia') ? omit(f, 'A9') : f;
-    const domain = (tab === 'apertura' || tab === 'violencia') ? [0,100] : null;
+    const special = tab === 'apertura' || tab === 'violencia' || tab === 'discriminacion';
+    const colors = special ? ['green','red'] : ['red','green'];
+    const filters = special ? omit(f, 'A9') : f;
+    const domain = special ? [0,100] : null;
     const suffix = tab === 'apertura'
       ? ' % de ocultación'
       : tab === 'violencia'
         ? '% que ha recibido violencia'
-        : '';
+        : tab === 'discriminacion'
+          ? '% que ha sufrido discriminación'
+          : '';
     drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors, domain, suffix);
     if (tab === 'apertura') {
       mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de cultura/ocultación por países</h3>');
+    } else if (tab === 'discriminacion') {
+      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de discriminación por países</h3>');
     }
   }
 
@@ -751,9 +775,19 @@ function renderTab (tab, f) {
   }
 
   if (tab === 'discriminacion') {
-    drawBars(charts.appendChild(document.createElement('div')),
-      ['B5_A','B5_B','B5_C','B5_D']
-        .map(v => ({ label: v, value: pct(v, chartFilters) }))
+    const barData = DISCRIM_VARS.map(v => {
+      const info = pctInfo(v, chartFilters);
+      return {
+        label: DISCRIM_ES[v] || v,
+        value: info.pct,
+        count: info.count,
+        total: info.total
+      };
+    });
+    drawBars(
+      charts.appendChild(Object.assign(document.createElement('div'), { className: 'bar-chart' })),
+      barData,
+      'Ámbitos de discriminación'
     );
   }
 }
