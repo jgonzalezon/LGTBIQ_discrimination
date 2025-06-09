@@ -155,6 +155,23 @@ input[type="email"]{
   display:inline-block;
 }
 
+.bar-chart{
+  max-width:600px;
+}
+.bar-chart h4{
+  text-align:center;
+  margin:0 0 8px;
+  font-size:200%;
+}
+.bar-chart svg{
+  width:100%;
+  height:auto;
+}
+.bar-label, .bar-name{
+  fill:#fff;
+  font-size:.9rem;
+}
+
 /* leyenda */
 #map-legend{
   width:50%; height:14px; margin:10px auto 0;

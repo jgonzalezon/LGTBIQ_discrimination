@@ -279,23 +279,50 @@ function drawMap (target, geo, metrics, colors = ['red', 'green'], domain = null
        .text(d => d3.format('.0f')(d));
 }
 
-function drawBars (target, data) {
-  const w = 360, h = 260, m = 40;
-  const svg = d3.select(target).html('').append('svg')
-                .attr('viewBox', [0, 0, w, h]);
+function drawBars (target, data, title) {
+  const w = 480, h = 320, m = { top: 20, right: 40, bottom: 20, left: 120 };
 
-  const x = d3.scaleLinear([0, d3.max(data, d => d.value)], [m, w - m]);
-  const y = d3.scaleBand(data.map(d => d.label), [m, h - m]).padding(0.1);
+  const div = d3.select(target).html('');
+  if (title) div.append('h4').text(title);
+
+  const svg = div.append('svg')
+                .attr('viewBox', [0, 0, w, h])
+                .attr('width', '100%')
+                .attr('height', '100%');
+
+  const x = d3.scaleLinear([0, d3.max(data, d => d.value)], [m.left, w - m.right]);
+  const y = d3.scaleBand(data.map(d => d.label), [m.top, h - m.bottom]).padding(0.1);
 
   svg.append('g')
      .selectAll('rect')
      .data(data)
      .join('rect')
-       .attr('x', m)
+       .attr('x', m.left)
        .attr('y', d => y(d.label))
        .attr('height', y.bandwidth())
-       .attr('width', d => x(d.value) - m)
+       .attr('width', d => x(d.value) - m.left)
        .attr('fill', '#00cfe8');
+
+  svg.append('g')
+     .selectAll('text.bar-label')
+     .data(data)
+     .join('text')
+       .attr('class', 'bar-label')
+       .attr('x', d => x(d.value) + 4)
+       .attr('y', d => y(d.label) + y.bandwidth() / 2)
+       .attr('dy', '.35em')
+       .text(d => d3.format('.0%')(d.value));
+
+  svg.append('g')
+     .selectAll('text.bar-name')
+     .data(data)
+     .join('text')
+       .attr('class', 'bar-name')
+       .attr('x', m.left - 6)
+       .attr('y', d => y(d.label) + y.bandwidth() / 2)
+       .attr('dy', '.35em')
+       .attr('text-anchor', 'end')
+       .text(d => d.label);
 }
 
 function drawDonut (target, val, title) {
@@ -429,7 +456,13 @@ function renderTab (tab, f) {
   }
 
   if (tab === 'apertura') {
-    drawDonut(charts.appendChild(document.createElement('div')), pct('H2', chartFilters));
+    const barData = ['B5_A','B5_B','B5_C','B5_D']
+      .map(v => ({ label: v, value: pct(v, chartFilters) }));
+    drawBars(
+      charts.appendChild(Object.assign(document.createElement('div'), { className: 'bar-chart' })),
+      barData,
+      'Porcentaje "Selected"'
+    );
   }
 
   if (tab === 'violencia') {
