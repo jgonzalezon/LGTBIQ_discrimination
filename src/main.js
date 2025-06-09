@@ -219,7 +219,7 @@ function drawBars (target, data) {
 }
 
 function drawDonut (target, val, title) {
-  const w = 320, h = 320, r = 120;
+  const w = 400, h = 400, r = 160;  // donuts aún más grandes
   const div = d3.select(target).html('');
   if (title) div.append('h4').text(title);
 

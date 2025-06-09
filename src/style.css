@@ -35,8 +35,8 @@ html, body{
   background:rgba(0,123,255,.9);
   color:#fff;
   border:none;
-  padding:20px 40px;
-  font-size:2rem;
+  padding:40px 80px;                  /* 200% más grande */
+  font-size:4rem;
   border-radius:8px;
   cursor:pointer;
   transition:.3s transform, .5s opacity;
@@ -72,7 +72,7 @@ input[type="email"]{
 
 #data-form button[type="submit"]{
   background:#007bff; color:#fff;
-  border:none; padding:12px 20px; font-size:1rem;
+  border:none; padding:24px 40px; font-size:2rem; /* 200% */
   border-radius:5px; cursor:pointer; margin-top:10px;
   transition:background-color .3s ease;
 }
@@ -84,7 +84,7 @@ input[type="email"]{
   margin:16px 0;
 }
 #tabs button{
-  border:none; padding:2px 6px; font-size:14px; cursor:pointer;
+  border:none; padding:4px 12px; font-size:28px; cursor:pointer; /* 200% */
 }
 #tabs button.active          { background:#ffe46b; color:#000; }
 #tabs button:not(.active)    { background:#00cfe8; color:#000; }
@@ -94,7 +94,7 @@ input[type="email"]{
   width:100%;
   max-width:1650px;
   height:900px;
-  margin:20px auto 40px;      /* 20 px top deja hueco tras tabs */
+  margin:20px auto 20px;      /* menos espacio bajo el mapa */
 }
 #viz-container .map h3{
   margin:0 0 10px; text-align:center; color:#fff;
@@ -102,6 +102,7 @@ input[type="email"]{
 
 #viz-container .charts{
   display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
+  margin-top:10px;                   /* menor separación respecto al mapa */
 }
 #viz-container .charts>div{
   background:#000;
@@ -125,7 +126,8 @@ input[type="email"]{
 /* botón “Volver al cuestionario” */
 #back-btn{
   position:fixed; bottom:24px; right:24px;
-  padding:8px 14px;
+  padding:16px 28px;               /* 200% */
+  font-size:2rem;
   background:#00cfe8; color:#000;
   border:none; border-radius:4px; cursor:pointer;
   box-shadow:0 2px 6px rgba(0,0,0,.4);
