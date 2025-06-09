@@ -396,6 +396,8 @@ function drawMap (target, geo, metrics, colors = ['red', 'green'], domain = null
        .attr('stroke', d => SELECTED_COUNTRY === d.properties.ISO3 ? '#fff' : '#000')
        .attr('stroke-width', d => SELECTED_COUNTRY === d.properties.ISO3 ? 2 : 0.5)
        .attr('cursor', 'pointer')
+       .on('mouseover', function(){ d3.select(this).attr('stroke','#fff').attr('stroke-width',2); })
+       .on('mouseout', function(e,d){ if(SELECTED_COUNTRY!==d.properties.ISO3) d3.select(this).attr('stroke','#000').attr('stroke-width',0.5); })
        .on('click', (e, d) => {
          const cc = d.properties.ISO3;
          SELECTED_COUNTRY = SELECTED_COUNTRY === cc ? null : cc;
@@ -459,7 +461,7 @@ function drawBars (target, data, title) {
                    .attr('y', d => y(d.label))
                    .attr('height', y.bandwidth())
                    .attr('width', 0)
-                   .attr('fill', '#00cfe8');
+                   .attr('fill', 'var(--cyan)');
 
   bars.append('title')
       .text(d => `${d.count} de ${d.total}`);
@@ -678,7 +680,7 @@ function renderTab (tab, f) {
   vc.appendChild(mapDiv);
   if (tab === 'mental') {
     drawMap(mapDiv, GEO, choroplethByCountry('H1', omit(f, 'A9')), ['red','green'], [0,10]);
-    mapDiv.insertAdjacentHTML('afterbegin', '<h3>Felicidad general del colectivo</h3>');
+    mapDiv.insertAdjacentHTML('afterbegin', '<h3>Felicidad general del colectivo</h3><p class="subtitle">Índice 0-100, verde bueno / rojo malo</p>');
   } else {
     const special = tab === 'apertura' || tab === 'violencia' || tab === 'discriminacion';
     const colors = special ? ['green','red'] : ['red','green'];
@@ -693,11 +695,11 @@ function renderTab (tab, f) {
           : '';
     drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors, domain, suffix);
     if (tab === 'apertura') {
-      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de apertura/ocultación por países</h3>');
+      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Nivel de apertura/ocultación por países</h3><p class="subtitle">Índice 0-100, verde bueno / rojo malo</p>');
     } else if (tab === 'violencia') {
-      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Violencia sobre el colectivo</h3>');
+      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Violencia sobre el colectivo</h3><p class="subtitle">Índice 0-100, verde bueno / rojo malo</p>');
     } else if (tab === 'discriminacion') {
-      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Discriminación sobre el colectivo</h3>');
+      mapDiv.insertAdjacentHTML('afterbegin', '<h3>Discriminación sobre el colectivo</h3><p class="subtitle">Índice 0-100, verde bueno / rojo malo</p>');
     }
   }
 
@@ -735,7 +737,8 @@ function renderTab (tab, f) {
           count: info.count,
           total: info.total
         };
-      });
+      })
+      .sort((a,b) => b.value - a.value);
     drawBars(
       charts.appendChild(Object.assign(document.createElement('div'), { className: 'bar-chart' })),
       barData,
@@ -785,7 +788,7 @@ function renderTab (tab, f) {
         count: info.count,
         total: info.total
       };
-    });
+    }).sort((a,b) => b.value - a.value);
     drawBars(
       charts.appendChild(Object.assign(document.createElement('div'), { className: 'bar-chart' })),
       barData,
@@ -799,6 +802,7 @@ function showDashboard (filters) {
 
   const tabs = document.createElement('div');
   tabs.id = 'tabs';
+  tabs.setAttribute('role','tablist');
   [
     ['mental','Salud mental'],
     ['apertura','Apertura'],
@@ -808,6 +812,8 @@ function showDashboard (filters) {
     const b = document.createElement('button');
     b.textContent = txt;
     b.dataset.tab = id;
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-label', txt);
     tabs.appendChild(b);
   });
 
@@ -824,6 +830,23 @@ function showDashboard (filters) {
     tabs.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === e.target));
     renderTab(e.target.dataset.tab, filters);
   };
+
+  tabs.addEventListener('keydown', e => {
+    const btns = Array.from(tabs.querySelectorAll('button'));
+    const idx = btns.indexOf(document.activeElement);
+    if (e.key === 'ArrowRight') {
+      btns[(idx + 1) % btns.length].focus();
+      e.preventDefault();
+    }
+    if (e.key === 'ArrowLeft') {
+      btns[(idx - 1 + btns.length) % btns.length].focus();
+      e.preventDefault();
+    }
+    if (e.key === 'Enter' || e.key === ' ') {
+      document.activeElement.click();
+      e.preventDefault();
+    }
+  });
 
   tabs.firstChild.classList.add('active');
   renderTab('mental', filters);

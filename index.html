@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LGTBIQ_discrimination</title>
+    <meta name="color-scheme" content="light dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./src/style.css" />
   </head>
 
@@ -51,7 +55,14 @@
         target="_blank"
         >https://fra.europa.eu/en/publication/2025/technical-report-eu-lgbtiq-survey-iii-0</a
       >
-      <button id="back-btn" type="button">Volver al cuestionario</button>
+      <button id="back-btn" type="button" aria-label="Volver al cuestionario">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 8 8 12 12 16"></polyline>
+          <line x1="16" y1="12" x2="8" y2="12"></line>
+        </svg>
+        Volver al cuestionario
+      </button>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
