@@ -91,8 +91,9 @@ input[type="email"]{
 
 /* mapa GRANDE (+ espacio arriba para tabs) */
 #viz-container .map{
-  width:100%; max-width:1100px;
-  height:600px;
+  width:100%;
+  max-width:1650px;
+  height:900px;
   margin:20px auto 40px;      /* 20 px top deja hueco tras tabs */
 }
 #viz-container .map h3{
@@ -103,10 +104,10 @@ input[type="email"]{
   display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
 }
 #viz-container .charts>div{
-  background:#111;
+  background:#000;
   padding:1rem;
-  border:1px solid #333;
-  border-radius:4px;
+  border:none;
+  border-radius:0;
   text-align:center;
 }
 

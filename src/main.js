@@ -132,7 +132,7 @@ function choroplethByCountry (tabOrVar, f) {
 ///// 5.  D3 – DRAWERS (sin cambios)
 function drawMap (target, geo, metrics) {
   const w = target.clientWidth || 900;
-  const h = 440;
+  const h = 660;
 
   const svg = d3.select(target).html('')
                 .append('svg')
@@ -219,7 +219,7 @@ function drawBars (target, data) {
 }
 
 function drawDonut (target, val, title) {
-  const w = 220, h = 220, r = 80;
+  const w = 320, h = 320, r = 120;
   const div = d3.select(target).html('');
   if (title) div.append('h4').text(title);
 
