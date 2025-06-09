@@ -95,15 +95,15 @@ input[type="email"]{
   width:100%;
   max-width:2060px;
   height:1125px;
-  margin:20px auto 10px;      /* menos espacio bajo el mapa */
+  margin:10px auto 0;          /* pegado a los donuts */
 }
 #viz-container .map h3{
-  margin:0 0 10px; text-align:center; color:#fff;
+  margin:0 0 5px; text-align:center; color:#fff;
 }
 
 #viz-container .charts{
   display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
-  margin-top:5px;                    /* menor separación respecto al mapa */
+  margin-top:0;                      /* contiguo al mapa */
 }
 #viz-container .charts>div:not(.donuts){
   background:#000;
