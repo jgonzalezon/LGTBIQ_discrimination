@@ -68,6 +68,25 @@ const SPECIAL_COLORS = {
   'Don\u2019t know': '#8B4513'      // marrón
 };
 
+const H2_ES = {
+  'At no time': 'En ning\u00fan momento',
+  'Some of the time': 'Algunas veces',
+  'Less than half of the time': 'Menos de la mitad del tiempo',
+  'More than half of the time': 'M\u00e1s de la mitad del tiempo',
+  'Most of the time': 'La mayor\u00eda del tiempo',
+  'All the time': 'Todo el tiempo',
+  'Prefer not to say': 'Prefiero no responder'
+};
+
+const H3_ES = {
+  'Never': 'Nunca',
+  'Rarely': 'Rara vez',
+  'Often': 'A menudo',
+  'Always': 'Siempre',
+  'Prefer not to say': 'Prefiero no responder',
+  'Don\u2019t know': 'No lo s\u00e9'
+};
+
 ///// 2.  PERSISTENCIA
 const saveAns = o   => localStorage.setItem(LS_KEY, JSON.stringify(o));
 const loadAns = ()  => JSON.parse(localStorage.getItem(LS_KEY) || 'null');
@@ -302,7 +321,7 @@ function colorFor(label, order) {
   return d3.interpolateRdYlGn(t);
 }
 
-function drawDonutDist (target, data, title, order) {
+function drawDonutDist (target, data, title, order, labels = {}) {
   const w = 360, h = 360, r = 140;
   const div = d3.select(target).html('');
   if (title) div.append('h4').text(title);
@@ -325,7 +344,7 @@ function drawDonutDist (target, data, title, order) {
                     .attr('d', arc({ startAngle: 0, endAngle: 0 }));
 
   arcs.append('title')
-      .text(d => `${d.data.label}: ${d.data.value}`);
+      .text(d => `${labels[d.data.label] || d.data.label}: ${d.data.value}`);
 
   arcs.transition()
       .duration(1000)
@@ -348,7 +367,7 @@ function drawDonutDist (target, data, title, order) {
   legend.selectAll('li')
         .data(data)
         .join('li')
-          .html(d => `<span style="background:${color(d.label)}"></span>${d.label}`);
+          .html(d => `<span style="background:${color(d.label)}"></span>${labels[d.label] || d.label}`);
 }
 
 ///// 6.  DASHBOARD (sin cambios lógicos)
@@ -385,13 +404,15 @@ function renderTab (tab, f) {
       donuts.appendChild(document.createElement('div')),
       distribution('H2', chartFilters, H2_VALUES),
       'Depresión en las últimas dos semanas',
-      H2_ORDER
+      H2_ORDER,
+      H2_ES
     );
     drawDonutDist(
       donuts.appendChild(document.createElement('div')),
       distribution('H3', chartFilters, H3_VALUES),
       'Intentos de suicidio en el último año',
-      H3_ORDER
+      H3_ORDER,
+      H3_ES
     );
   }
 
