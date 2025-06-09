@@ -95,6 +95,9 @@ input[type="email"]{
   height:600px;
   margin:20px auto 40px;      /* 20 px top deja hueco tras tabs */
 }
+#viz-container .map h3{
+  margin:0 0 10px; text-align:center; color:#fff;
+}
 
 #viz-container .charts{
   display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;

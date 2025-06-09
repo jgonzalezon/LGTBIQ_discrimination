@@ -96,6 +96,12 @@ function pct (variable, f) {
   return rows.length ? ones / rows.length : 0;
 }
 
+function omit (obj, key) {
+  const o = { ...obj };
+  delete o[key];
+  return o;
+}
+
 function choroplethByCountry (tabOrVar, f) {
   const VARS = {
     apertura:  ['B5_A','B5_B','B5_C','B5_D'],
@@ -104,7 +110,7 @@ function choroplethByCountry (tabOrVar, f) {
 
   const map = {};                // { ISO3:[scores] }
 
-  const rows = tabOrVar === 'H1' ? DATA : filteredRows(f);
+  const rows = filteredRows(tabOrVar === 'H1' ? omit(f, 'A9') : f);
 
   rows.forEach(r => {
     const cc = NAME_TO_ISO3[r.A9];
@@ -250,7 +256,8 @@ function renderTab (tab, f) {
   mapDiv.className = 'map';
   vc.appendChild(mapDiv);
   if (tab === 'mental') {
-    drawMap(mapDiv, GEO, choroplethByCountry('H1', {}));
+    drawMap(mapDiv, GEO, choroplethByCountry('H1', omit(f, 'A9')));
+    mapDiv.insertAdjacentHTML('afterbegin', '<h3>Felicidad general del colectivo</h3>');
   } else {
     drawMap(mapDiv, GEO, choroplethByCountry(tab, f)); // mapa = métricas globales
   }
@@ -340,6 +347,11 @@ function showDashboard (filters) {
 
   NAME_TO_ISO3 = Object.fromEntries(GEO.features.map(f => [f.properties.NAME, f.properties.ISO3]));
   ISO3_TO_NAME = Object.fromEntries(GEO.features.map(f => [f.properties.ISO3, f.properties.NAME]));
+  if (NAME_TO_ISO3['The former Yugoslav Republic of Macedonia']) {
+    const mkd = NAME_TO_ISO3['The former Yugoslav Republic of Macedonia'];
+    NAME_TO_ISO3['North Macedonia'] = mkd;
+    ISO3_TO_NAME[mkd] = 'North Macedonia';
+  }
 
   buildAgeRanges();
   fillSelects();
