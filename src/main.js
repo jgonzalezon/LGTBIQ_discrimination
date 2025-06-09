@@ -206,11 +206,11 @@ const DISCRIM_VARS = [
 ];
 
 const DISCRIM_ES = {
-  'D1_2_a': 'Buscar trabajo',
+  'D1_2_a': 'Buscando trabajo',
   'D1_2_b': 'En el trabajo',
-  'D1_2_c': 'Buscar vivienda',
-  'D1_2_d': 'Servicios de salud/sociales',
-  'D1_2_e': 'Personal educativo (otra)'
+  'D1_2_c': 'Buscando vivienda',
+  'D1_2_d': 'En centros de salud/servicios',
+  'D1_2_e': 'En centros educativos'
 };
 
 

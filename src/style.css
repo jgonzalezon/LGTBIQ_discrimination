@@ -246,9 +246,12 @@ input[type="email"]{
 
 /* ===== FOOTER ===== */
 #page-footer{
+  position:fixed;
+  bottom:0; left:0; width:100%;
   text-align:center;
-  margin:20px 0;
+  margin:0; padding:10px 0;
   font-size:.9rem;
   color:#ccc;
+  background:#000;
 }
 #page-footer a{ color:#ccc; }
