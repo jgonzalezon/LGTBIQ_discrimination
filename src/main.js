@@ -28,6 +28,25 @@ let SELECTED_COUNTRY = null; // país activo
 let CURRENT_TAB = 'mental';
 let CURRENT_FILTERS = null;
 
+const H2_VALUES = [
+  'At no time',
+  'Some of the time',
+  'Less than half of the time',
+  'More than half of the time',
+  'Most of the time',
+  'All the time',
+  'Prefer not to say'
+];
+
+const H3_VALUES = [
+  'Never',
+  'Rarely',
+  'Often',
+  'Always',
+  'Prefer not to say',
+  'Don\u2019t know'
+];
+
 ///// 2.  PERSISTENCIA
 const saveAns = o   => localStorage.setItem(LS_KEY, JSON.stringify(o));
 const loadAns = ()  => JSON.parse(localStorage.getItem(LS_KEY) || 'null');
@@ -94,6 +113,17 @@ function pct (variable, f) {
   const rows = filteredRows(f);
   const ones = rows.filter(r => isOne(r[variable])).length;
   return rows.length ? ones / rows.length : 0;
+}
+
+function distribution (variable, f, categories) {
+  const rows = filteredRows(f);
+  const counts = new Map();
+  rows.forEach(r => {
+    const val = r[variable];
+    if (val == null || val === '') return;
+    counts.set(val, (counts.get(val) || 0) + 1);
+  });
+  return categories.map(c => ({ label: c, value: counts.get(c) || 0 }));
 }
 
 function omit (obj, key) {
@@ -219,7 +249,7 @@ function drawBars (target, data) {
 }
 
 function drawDonut (target, val, title) {
-  const w = 400, h = 400, r = 160;  // donuts aún más grandes
+  const w = 400, h = 400, r = 160;
   const div = d3.select(target).html('');
   if (title) div.append('h4').text(title);
 
@@ -242,6 +272,35 @@ function drawDonut (target, val, title) {
      .attr('text-anchor', 'middle')
      .attr('fill', '#fff')
      .text(d3.format('.0%')(val));
+}
+
+function drawDonutDist (target, data, title) {
+  const w = 640, h = 640, r = 240;  // 200% más grande
+  const div = d3.select(target).html('');
+  if (title) div.append('h4').text(title);
+
+  const svg = div.append('svg').attr('viewBox', [0, 0, w, h])
+                .append('g')
+                .attr('transform', `translate(${w/2},${h/2})`);
+
+  const color = d3.scaleOrdinal(d3.schemeCategory10)
+                  .domain(data.map(d => d.label));
+  const pie = d3.pie().value(d => d.value);
+  const arc = d3.arc().innerRadius(r * 0.6).outerRadius(r);
+
+  svg.selectAll('path')
+     .data(pie(data))
+     .join('path')
+       .attr('d', arc)
+       .attr('fill', d => color(d.data.label))
+       .append('title')
+         .text(d => `${d.data.label}: ${d.data.value}`);
+
+  const legend = div.append('ul').attr('class', 'donut-legend');
+  legend.selectAll('li')
+        .data(data)
+        .join('li')
+          .html(d => `<span style="background:${color(d.label)}"></span>${d.label}`);
 }
 
 ///// 6.  DASHBOARD (sin cambios lógicos)
@@ -271,8 +330,16 @@ function renderTab (tab, f) {
   vc.appendChild(charts);
 
   if (tab === 'mental') {
-    drawDonut(charts.appendChild(document.createElement('div')), pct('H2', chartFilters), 'Depresión');
-    drawDonut(charts.appendChild(document.createElement('div')), pct('H3', chartFilters), 'Intentos de suicidio');
+    drawDonutDist(
+      charts.appendChild(document.createElement('div')),
+      distribution('H2', chartFilters, H2_VALUES),
+      'Depresión'
+    );
+    drawDonutDist(
+      charts.appendChild(document.createElement('div')),
+      distribution('H3', chartFilters, H3_VALUES),
+      'Intentos de suicidio'
+    );
   }
 
   if (tab === 'apertura') {
