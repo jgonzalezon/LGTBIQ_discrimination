@@ -99,6 +99,7 @@ input[type="email"]{
 }
 #viz-container .map h3{
   margin:0 0 5px; text-align:center; color:#fff;
+  font-size:200%;
 }
 
 #viz-container .charts{
@@ -124,6 +125,7 @@ input[type="email"]{
 .donuts h4{
   text-align:center;
   margin:0 0 8px;
+  font-size:200%;
 }
 .donuts svg{
   width:100%;
