@@ -93,6 +93,105 @@ const B5_ES = {
   "B5_D": "Trabajo"
 };
 
+const E1_VALUES = [
+  'All of the time',
+  'More than 10 times',
+  '6-10',
+  '3-5',
+  'Twice',
+  'Once',
+  'Never',
+  'Don\u2019t know',
+  'Prefer not to say'
+];
+
+const E1_ORDER = [
+  'All of the time',
+  'More than 10 times',
+  '6-10',
+  '3-5',
+  'Twice',
+  'Once',
+  'Never'
+];
+
+const E1_ES = {
+  'All of the time': 'Todo el tiempo',
+  'More than 10 times': 'M\u00e1s de 10 veces',
+  '6-10': '6-10 veces',
+  '3-5': '3-5 veces',
+  'Twice': 'Dos veces',
+  'Once': 'Una vez',
+  'Never': 'Nunca',
+  'Don\u2019t know': 'No lo s\u00e9',
+  'Prefer not to say': 'Prefiero no responder'
+};
+
+const E3_VALUES = [
+  'Physical attack',
+  'Sexual attack',
+  'Physical and sexual attack',
+  'Not applicable',
+  'Don\u2019t know',
+  'Prefer not to say'
+];
+
+const E3_ORDER = [
+  'Physical and sexual attack',
+  'Physical attack',
+  'Sexual attack',
+  'Not applicable'
+];
+
+const E3_ES = {
+  'Physical attack': 'Ataque f\u00edsico',
+  'Sexual attack': 'Ataque sexual',
+  'Physical and sexual attack': 'Ataque f\u00edsico y sexual',
+  'Not applicable': 'No aplicable',
+  'Don\u2019t know': 'No lo s\u00e9',
+  'Prefer not to say': 'Prefiero no responder'
+};
+
+const F1_VALUES = [
+  'All the time',
+  'More than ten times',
+  '6-10 times',
+  '3-5 times',
+  'Twice',
+  'Once',
+  'Never',
+  'Don\u2019t know',
+  'Prefer not to say'
+];
+
+const F1_ORDER = [
+  'All the time',
+  'More than ten times',
+  '6-10 times',
+  '3-5 times',
+  'Twice',
+  'Once',
+  'Never'
+];
+
+const F1_ES = {
+  'All the time': 'Todo el tiempo',
+  'More than ten times': 'M\u00e1s de diez veces',
+  '6-10 times': '6-10 veces',
+  '3-5 times': '3-5 veces',
+  'Twice': 'Dos veces',
+  'Once': 'Una vez',
+  'Never': 'Nunca',
+  'Don\u2019t know': 'No lo s\u00e9',
+  'Prefer not to say': 'Prefiero no responder'
+};
+
+const F1_VAR_ES = {
+  'F1_A': 'Comentarios ofensivos',
+  'F1_B': 'Amenazas de violencia',
+  'F1_C': 'Gestos intimidantes'
+};
+
 
 ///// 2.  PERSISTENCIA
 const saveAns = o   => localStorage.setItem(LS_KEY, JSON.stringify(o));
@@ -454,6 +553,80 @@ function drawDonutDist (target, data, title, order, labels = {}) {
           .html(d => `<span style="background:${color(d.label)}"></span>${labels[d.label] || d.label}`);
 }
 
+function drawStackedBars(target, vars, f, categories, order, catLabels = {}, varLabels = {}, title = '') {
+  const w = 480, h = 300, m = { top: 20, right: 40, bottom: 20, left: 160 };
+
+  const div = d3.select(target).html('');
+  if (title) div.append('h4').text(title);
+
+  const rows = vars.map(v => {
+    const dist = distribution(v, f, categories);
+    const total = d3.sum(dist, d => d.value);
+    const obj = { var: v };
+    categories.forEach(c => {
+      const found = dist.find(d => d.label === c);
+      obj[c] = total ? (found ? found.value / total : 0) : 0;
+    });
+    return obj;
+  });
+
+  const stack = d3.stack().keys(order)(rows);
+  const x = d3.scaleLinear([0, 1], [m.left, w - m.right]);
+  const y = d3.scaleBand(vars, [m.top, h - m.bottom]).padding(0.1);
+  const color = c => colorFor(c, order);
+
+  const svg = div.append('svg')
+                .attr('viewBox', [0, 0, w, h])
+                .attr('width', '100%')
+                .attr('height', '100%');
+
+  const groups = svg.append('g')
+                    .selectAll('g')
+                    .data(stack)
+                    .join('g')
+                      .attr('fill', d => color(d.key));
+
+  const rects = groups.selectAll('rect')
+                      .data(d => d.map(p => Object.assign({}, p, { key: d.key })))
+                      .join('rect')
+                        .attr('x', x(0))
+                        .attr('y', d => y(d.data.var))
+                        .attr('height', y.bandwidth())
+                        .attr('width', 0);
+
+  rects.append('title')
+       .text(d => `${varLabels[d.data.var] || d.data.var}: ${catLabels[d.key] || d.key} ${d3.format('.0%')(d[1] - d[0])}`);
+
+  const rectX = d => x(d[0]);
+  const rectW = d => x(d[1]) - x(d[0]);
+  if (!document.documentElement.classList.contains('no-motion')) {
+    rects.transition()
+         .duration(750)
+         .attr('x', rectX)
+         .attr('width', rectW);
+  } else {
+    rects.attr('x', rectX).attr('width', rectW);
+  }
+
+  svg.append('g')
+     .selectAll('text')
+     .data(vars)
+     .join('text')
+       .attr('class', 'bar-name')
+       .attr('x', m.left - 6)
+       .attr('y', v => y(v) + y.bandwidth() / 2)
+       .attr('dy', '.35em')
+       .attr('text-anchor', 'end')
+       .text(v => varLabels[v] || v);
+
+  const legendCats = order.concat(categories.filter(c => !order.includes(c)));
+  const legend = div.append('ul').attr('class', 'donut-legend');
+  legend.selectAll('li')
+        .data(legendCats)
+        .join('li')
+          .html(d => `<span style="background:${color(d)}"></span>${catLabels[d] || d}`);
+}
+
 ///// 6.  DASHBOARD (sin cambios lógicos)
 function renderTab (tab, f) {
   CURRENT_TAB = tab;
@@ -474,8 +647,8 @@ function renderTab (tab, f) {
     mapDiv.insertAdjacentHTML('afterbegin', '<h3>Felicidad general del colectivo</h3>');
   } else {
     const colors = tab === 'apertura' ? ['green','red'] : ['red','green'];
-    const filters = tab === 'apertura' ? omit(f, 'A9') : f;
-    const domain = tab === 'apertura' ? [0,100] : null;
+    const filters = (tab === 'apertura' || tab === 'violencia') ? omit(f, 'A9') : f;
+    const domain = (tab === 'apertura' || tab === 'violencia') ? [0,100] : null;
     const suffix = tab === 'apertura' ? ' % de ocultación' : '';
     drawMap(mapDiv, GEO, choroplethByCountry(tab, filters), colors, domain, suffix);
     if (tab === 'apertura') {
@@ -526,8 +699,32 @@ function renderTab (tab, f) {
   }
 
   if (tab === 'violencia') {
-    ['E1','E3','F1_A','F1_B','F1_C'].forEach(v =>
-      drawDonut(charts.appendChild(document.createElement('div')), pct(v, chartFilters))
+    const donuts = document.createElement('div');
+    donuts.className = 'donuts';
+    charts.appendChild(donuts);
+    drawDonutDist(
+      donuts.appendChild(document.createElement('div')),
+      distribution('E1', chartFilters, E1_VALUES),
+      'Número de ataques en los últimos 5 años',
+      E1_ORDER,
+      E1_ES
+    );
+    drawDonutDist(
+      donuts.appendChild(document.createElement('div')),
+      distribution('E3', chartFilters, E3_VALUES),
+      'Tipo de ataque recibido',
+      E3_ORDER,
+      E3_ES
+    );
+    drawStackedBars(
+      charts.appendChild(Object.assign(document.createElement('div'), { className: 'stacked-bars' })),
+      ['F1_A','F1_B','F1_C'],
+      chartFilters,
+      F1_VALUES,
+      F1_ORDER,
+      F1_ES,
+      F1_VAR_ES,
+      'Intimidación'
     );
   }
 
