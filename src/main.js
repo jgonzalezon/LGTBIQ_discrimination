@@ -809,7 +809,7 @@ function showDashboard (filters) {
   });
 
   const backBtn = document.getElementById('back-btn');
-  backBtn.style.display = '';
+  backBtn.style.display = 'block';
 
   dash.append(
     tabs,
