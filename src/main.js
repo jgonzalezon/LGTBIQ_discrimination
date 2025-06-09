@@ -189,8 +189,11 @@ function choroplethByCountry (tabOrVar, f) {
     if (tabOrVar === 'H1') {
       const val = +r.H1;
       if (!Number.isNaN(val)) (map[cc] ??= []).push(val);
+    } else if (tabOrVar === 'apertura') {
+      const anySel = VARS.some(v => isOne(r[v]));
+      (map[cc] ??= []).push(anySel ? 100 : 0);
     } else {
-      const score = d3.mean(VARS, v => +isOne(r[v]));
+      const score = d3.mean(VARS, v => +isOne(r[v])) * 100;
       (map[cc] ??= []).push(score);
     }
   });
@@ -200,7 +203,7 @@ function choroplethByCountry (tabOrVar, f) {
 }
 
 ///// 5.  D3 – DRAWERS (sin cambios)
-function drawMap (target, geo, metrics) {
+function drawMap (target, geo, metrics, colors = ['red', 'green']) {
   const w = target.clientWidth || 900;
   const h = target.clientHeight || 660;
 
@@ -218,7 +221,7 @@ function drawMap (target, geo, metrics) {
   const max = vals.length ? d3.max(vals) : 10;
   const color = d3.scaleLinear()
                  .domain([min, max])
-                 .range(['red', 'green']);
+                 .range(colors);
 
   svg.append('g')
      .selectAll('path')
@@ -393,7 +396,8 @@ function renderTab (tab, f) {
     drawMap(mapDiv, GEO, choroplethByCountry('H1', omit(f, 'A9')));
     mapDiv.insertAdjacentHTML('afterbegin', '<h3>Felicidad general del colectivo</h3>');
   } else {
-    drawMap(mapDiv, GEO, choroplethByCountry(tab, f)); // mapa = métricas globales
+    const colors = tab === 'apertura' ? ['green','red'] : ['red','green'];
+    drawMap(mapDiv, GEO, choroplethByCountry(tab, f), colors); // mapa = métricas globales
   }
 
   const charts = document.createElement('div');
