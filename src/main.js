@@ -274,8 +274,9 @@ function drawDonut (target, val, title) {
      .text(d3.format('.0%')(val));
 }
 
-function drawDonutDist (target, data, title) {
-  const w = 640, h = 640, r = 240;  // 200% más grande
+function drawDonutDist (target, data, title, scale = 1) {
+  const baseW = 640, baseR = 240;
+  const w = baseW * scale, h = baseW * scale, r = baseR * scale;
   const div = d3.select(target).html('');
   if (title) div.append('h4').text(title);
 
@@ -288,13 +289,21 @@ function drawDonutDist (target, data, title) {
   const pie = d3.pie().value(d => d.value);
   const arc = d3.arc().innerRadius(r * 0.6).outerRadius(r);
 
-  svg.selectAll('path')
-     .data(pie(data))
-     .join('path')
-       .attr('d', arc)
-       .attr('fill', d => color(d.data.label))
-       .append('title')
-         .text(d => `${d.data.label}: ${d.data.value}`);
+  const arcs = svg.selectAll('path')
+                  .data(pie(data))
+                  .join('path')
+                    .attr('fill', d => color(d.data.label))
+                    .attr('d', arc({ startAngle: 0, endAngle: 0 }));
+
+  arcs.append('title')
+      .text(d => `${d.data.label}: ${d.data.value}`);
+
+  arcs.transition()
+      .duration(1000)
+      .attrTween('d', function(d){
+        const i = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
+        return t => arc(i(t));
+      });
 
   const legend = div.append('ul').attr('class', 'donut-legend');
   legend.selectAll('li')
@@ -333,12 +342,13 @@ function renderTab (tab, f) {
     drawDonutDist(
       charts.appendChild(document.createElement('div')),
       distribution('H2', chartFilters, H2_VALUES),
-      'Depresión'
+      'Depresión en las últimas dos semanas',
+      0.5
     );
     drawDonutDist(
       charts.appendChild(document.createElement('div')),
       distribution('H3', chartFilters, H3_VALUES),
-      'Intentos de suicidio'
+      'Intentos de suicidio en el último año'
     );
   }
 
