@@ -266,7 +266,30 @@ input[type="email"]{
 
 /* ==== RESPONSIVE ==== */
 @media (max-width:600px){
+  /* introducción */
+  #intro-image{ height:25vh; }
+  .intro-question{ font-size:1.5rem; }
+  #start-button{ padding:12px 20px; font-size:1.3rem; }
+
+  /* formulario */
+  #form-container{
+    width:90%;
+    max-height:90vh;
+    overflow:auto;
+  }
+
+  /* gráficos */
   #viz-container .map{ height:525px; }
+  #tabs button{ font-size:20px; }
+  .donuts h4,
+  .bar-chart h4,
+  .stacked-bars h4,
+  .violence-charts h4,
+  #viz-container .map h3{ font-size:150%; }
+
+  /* pie */
+  #page-footer{ font-size:1rem; padding:10px; }
+  #back-btn{ right:16px; }
 }
 
 /* ===== FOOTER ===== */
