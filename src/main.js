@@ -9,6 +9,8 @@ const intro     = document.getElementById('intro');
 const formWrap  = document.getElementById('form-container');
 const form      = document.getElementById('data-form');
 const dash      = document.getElementById('dashboard');
+const base = import.meta.env.BASE_URL || '/';
+
 
 const CSV_VARIABLES = [               // ❶  A12 se elimina de la lista
   'A9',              // País de residencia
@@ -838,16 +840,17 @@ function showDashboard (filters) {
 
 ///// 7.  INICIO
 (async function init () {
-  try {
-    [GEO, DATA] = await Promise.all([
-      d3.json('./data/europe.geojson'),
-      d3.csv('./data/selected_variables.csv', d3.autoType)
-    ]);
-  } catch (err) {
-    console.error(err);
-    intro.innerHTML = '<p>No se pudieron cargar los datos.</p>';
-    return;
-  }
+  
+try {
+  [GEO, DATA] = await Promise.all([
+    d3.json(`${base}data/europe.geojson`),
+    d3.csv(`${base}data/selected_variables.csv`, d3.autoType),
+  ]);
+} catch (err) {
+  console.error(err);
+  intro.innerHTML = '<p>No se pudieron cargar los datos.</p>';
+  return;
+}
 
   NAME_TO_ISO3 = Object.fromEntries(GEO.features.map(f => [f.properties.NAME, f.properties.ISO3]));
   ISO3_TO_NAME = Object.fromEntries(GEO.features.map(f => [f.properties.ISO3, f.properties.NAME]));
