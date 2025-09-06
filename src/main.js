@@ -9,7 +9,7 @@ const intro     = document.getElementById('intro');
 const formWrap  = document.getElementById('form-container');
 const form      = document.getElementById('data-form');
 const dash      = document.getElementById('dashboard');
-const base = import.meta.env.BASE_URL || '/';
+const base = import.meta.env.BASE_URL;
 
 
 const CSV_VARIABLES = [               // ❶  A12 se elimina de la lista
